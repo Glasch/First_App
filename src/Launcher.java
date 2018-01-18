@@ -1,3 +1,5 @@
+import ui.Front;
+
 /**
  * Copyright (c) Anton on 18.01.2018.
  */

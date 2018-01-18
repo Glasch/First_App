@@ -1,8 +1,12 @@
 package ui;
 
+import model.FBIAgentStatus;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +16,16 @@ import java.io.IOException;
  */
 public class Front {
 
-    BufferedImage agentImage;
 
-   public void createGUI() {
+   private BufferedImage agentImage;
+   private Controller controller;
+    private JTextField surnameTextField;
+
+    public Front() {
+        controller = new Controller(this);
+    }
+
+    public void createGUI() {
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -34,6 +45,12 @@ public class Front {
         frame.add(panel, BorderLayout.SOUTH);
         JButton addButton = new JButton("ADD");
         panel.add(addButton);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.onAddButtonClick();
+            }
+        });
 
         frame.pack();
         frame.setVisible(true);
@@ -67,7 +84,7 @@ public class Front {
 
         JLabel surnameLabel = new JLabel("SURNAME");
         panel.add(surnameLabel);
-        JTextField surnameTextField = new JTextField();
+        surnameTextField = new JTextField();
 //        surnameTextField.setPreferredSize(new Dimension(0, 25));
         panel.add(surnameTextField);
 
@@ -93,14 +110,13 @@ public class Front {
         panel.add(specialCharacteristicsLabel);
         JCheckBox PhysicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
         panel.add(PhysicalPowerCheckBox);
-        JCheckBox MentallyStrongCheckBox = new JCheckBox("MENTALLY STRONG");
+        JCheckBox MentallyStrongCheckBox = new JCheckBox("MENTAL STRENGTH");
         panel.add(MentallyStrongCheckBox);
         JCheckBox PatriotismCheckBox = new JCheckBox("PATRIOTISM");
         panel.add(PatriotismCheckBox);
 
         JLabel statusLabel = new JLabel("STATUS");
-        String[] items = createItems();
-        JComboBox <String> statusComboBox = new JComboBox <>(items);
+        JComboBox <FBIAgentStatus> statusComboBox = new JComboBox <>(FBIAgentStatus.values());
         panel.add(statusComboBox);
     }
 
@@ -130,16 +146,6 @@ public class Front {
     }
 
 
-    private String[] createItems() {
-        return new String[]{
-                "READY",
-                "ON THE TASK",
-                "INJURED",
-                "LOST",
-                "TRAITOR",
-                "DIED",
-        };
-    }
 
     private void createSexGroup(JRadioButton sexMale, JRadioButton sexFemale) {
         ButtonGroup sexGroup = new ButtonGroup();
@@ -147,5 +153,7 @@ public class Front {
         sexGroup.add(sexFemale);
     }
 
-
+    public JTextField getSurnameTextField() {
+        return surnameTextField;
+    }
 }

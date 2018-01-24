@@ -19,7 +19,7 @@ public class Front {
 
    private BufferedImage agentImage;
    private Controller controller;
-    private JTextField surnameTextField;
+   private JTextField surnameTextField;
 
     public Front() {
         controller = new Controller(this);
@@ -28,11 +28,15 @@ public class Front {
     public void createGUI() {
 
         JFrame frame = new JFrame();
+
+
+
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(900, 600);
-
         frame.setLayout(new BorderLayout(5, 5));
+
+
 
         initTopPanel(frame);
         initLeftPanel(frame);
@@ -48,7 +52,8 @@ public class Front {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.onAddButtonClick();
+           //   controller.onAddButtonClick();
+                JOptionPane.showMessageDialog(frame, "           AGENT ADDED!");
             }
         });
 
@@ -62,6 +67,7 @@ public class Front {
         panel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         panel.setAlignmentY(JPanel.TOP_ALIGNMENT);
         frame.add(panel, BorderLayout.EAST);
+
 
         JLabel previousTasksLabel = new JLabel("PREVIOUS TASKS");
         panel.add(previousTasksLabel);
@@ -84,39 +90,56 @@ public class Front {
 
         JLabel surnameLabel = new JLabel("SURNAME");
         panel.add(surnameLabel);
+        surnameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         surnameTextField = new JTextField();
-//        surnameTextField.setPreferredSize(new Dimension(0, 25));
         panel.add(surnameTextField);
 
         JLabel nameLabel = new JLabel("NAME");
         panel.add(nameLabel);
+        nameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         JTextField nameTextField = new JTextField();
         panel.add(nameTextField);
 
         JLabel sexLabel = new JLabel("SEX");
         panel.add(sexLabel);
+        sexLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         JRadioButton sexMaleButton = new JRadioButton("MALE");
         JRadioButton sexFemaleButton = new JRadioButton("FEMALE");
         createSexGroup(sexMaleButton, sexFemaleButton);
-        panel.add(sexMaleButton);
-        panel.add(sexFemaleButton);
+        Box box = Box.createVerticalBox();
+        box.add(sexMaleButton);
+        box.add(sexFemaleButton);
+        box.add(Box.createHorizontalGlue());
+        panel.add(box);
+        box.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
         JLabel nicknameLabel = new JLabel("NICKNAME");
         panel.add(nicknameLabel);
+        nicknameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         JPasswordField nicknameField = new JPasswordField();
         panel.add(nicknameField);
 
         JLabel specialCharacteristicsLabel = new JLabel("SPECIAL CHARACTERISTICS");
         panel.add(specialCharacteristicsLabel);
-        JCheckBox PhysicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
-        panel.add(PhysicalPowerCheckBox);
-        JCheckBox MentallyStrongCheckBox = new JCheckBox("MENTAL STRENGTH");
-        panel.add(MentallyStrongCheckBox);
-        JCheckBox PatriotismCheckBox = new JCheckBox("PATRIOTISM");
-        panel.add(PatriotismCheckBox);
+        specialCharacteristicsLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        JCheckBox physicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
+        JCheckBox mentallyStrongCheckBox = new JCheckBox("MENTAL STRENGTH");
+        JCheckBox patriotismCheckBox = new JCheckBox("PATRIOTISM");
+        Box box1 = Box.createVerticalBox();
+        box1.add(physicalPowerCheckBox);
+        box1.add(mentallyStrongCheckBox);
+        box1.add(patriotismCheckBox);
+        box1.add(Box.createHorizontalGlue());
+        panel.add(box1);
+        box1.setAlignmentX(Box.RIGHT_ALIGNMENT);
+
+
+
 
         JLabel statusLabel = new JLabel("STATUS");
         JComboBox <FBIAgentStatus> statusComboBox = new JComboBox <>(FBIAgentStatus.values());
+        panel.add(statusLabel);
+        statusLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         panel.add(statusComboBox);
     }
 
@@ -124,6 +147,7 @@ public class Front {
         loadImage();
         JLabel imageLabel = new JLabel(new ImageIcon(agentImage));
         JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         frame.add(panel, BorderLayout.WEST);
         panel.add(imageLabel);
@@ -156,4 +180,7 @@ public class Front {
     public JTextField getSurnameTextField() {
         return surnameTextField;
     }
+
+
+
 }

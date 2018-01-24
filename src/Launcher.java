@@ -1,5 +1,7 @@
 import ui.Front;
 
+import javax.swing.*;
+
 /**
  * Copyright (c) Anton on 18.01.2018.
  */

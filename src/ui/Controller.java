@@ -3,6 +3,9 @@ package ui;
 import model.DBManager;
 import model.FBIAgent;
 
+import javax.swing.*;
+import java.awt.*;
+
 /**
  * Copyright (c) Anton on 18.01.2018.
  */
@@ -26,5 +29,8 @@ public class Controller {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+
+
+
     }
 }

@@ -1,12 +1,15 @@
 package ui;
 
 import model.FBIAgentStatus;
+import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +20,12 @@ import java.io.IOException;
 public class Front {
 
 
+
+
    private BufferedImage agentImage;
    private Controller controller;
    private JTextField surnameTextField;
+
 
     public Front() {
         controller = new Controller(this);
@@ -144,8 +150,36 @@ public class Front {
     }
 
     private void initLeftPanel(JFrame frame) {
-        loadImage();
+        String path = "photo.jpg";
+        loadImage(path);
         JLabel imageLabel = new JLabel(new ImageIcon(agentImage));
+        imageLabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                controller.onImageLabelClick(imageLabel);
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
@@ -153,9 +187,10 @@ public class Front {
         panel.add(imageLabel);
     }
 
-    private void loadImage() {
+    void loadImage(String path) {
         try {
-            agentImage = ImageIO.read(new File("photo.jpg"));
+            agentImage = ImageIO.read(new File(path));
+            agentImage = Scalr.resize(agentImage,450,250); // TODO: 24.01.2018 ВОТ ТУТ ВОПРОС!
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -171,15 +206,25 @@ public class Front {
 
 
 
+
+
     private void createSexGroup(JRadioButton sexMale, JRadioButton sexFemale) {
         ButtonGroup sexGroup = new ButtonGroup();
         sexGroup.add(sexMale);
         sexGroup.add(sexFemale);
     }
 
-    public JTextField getSurnameTextField() {
+
+
+
+    JTextField getSurnameTextField() {
         return surnameTextField;
     }
+
+    BufferedImage getAgentImage() {
+        return agentImage;
+    }
+
 
 
 

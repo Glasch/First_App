@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="postgresql:postgresql:8.4-702.jdbc4" level="project" />
+    <orderEntry type="library" name="org.imgscalr:imgscalr-lib:4.2" level="project" />
   </component>
 </module>

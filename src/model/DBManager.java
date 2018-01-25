@@ -11,9 +11,9 @@ public class DBManager {
         Connection connection = getConnection();
         String sql = "INSERT INTO agent(\n" +
                 "            surname, \"name\", sex, nickname, physicalpower, mentalstrength, \n" +
-                "            patriotism)\n" +
+                "            patriotism, status)\n" +
                 "    VALUES (?, ?, ?, ?, ?, ?, \n" +
-                "            ?);";
+                "            ?, ?::agentstatus);";
         PreparedStatement st = connection.prepareStatement(sql);
         st.setString(1,agent.getSurname());
         st.setString(2,agent.getName());
@@ -22,8 +22,8 @@ public class DBManager {
         st.setBoolean(5,agent.isPhysicalPower());
         st.setBoolean(6,agent.isMentalStrength());
         st.setBoolean(7,agent.isPatriotism());
-     //   st.setObject(9, agent.getStatus());
-     //   st.setBinaryStream(10,agent.getImage());
+        st.setString(8, agent.getStatus().toString());
+//        st.setBinaryStream(9,agent.getImage());
 
 
 

@@ -12,7 +12,7 @@ public class FBIAgent {
   private   boolean mentalStrength;
   private   boolean patriotism;
   private   FBIAgentStatus status;
-  private   byte image;
+  private   byte[] image;
 
     public String getSurname() {
         return surname;
@@ -78,11 +78,11 @@ public class FBIAgent {
         this.status = status;
     }
 
-    public byte getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(byte image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 }

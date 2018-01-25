@@ -4,8 +4,15 @@ import model.DBManager;
 import model.FBIAgent;
 import model.FBIAgentStatus;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 /**
@@ -31,6 +38,8 @@ class Controller {
         fbiAgent.setMentalStrength(front.getMentallyStrongCheckBox().isSelected());
         fbiAgent.setPatriotism(front.getPatriotismCheckBox().isSelected());
         fbiAgent.setStatus(selectStatus());
+        fbiAgent.setImage(createByteaImage());
+
         System.out.println(fbiAgent.getSurname());
         System.out.println(fbiAgent.getName());
         System.out.println(fbiAgent.getSex());
@@ -49,6 +58,7 @@ class Controller {
 
 
     }
+
 
     private FBIAgentStatus selectStatus() {
         if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.READY) {
@@ -86,6 +96,11 @@ class Controller {
 
 
         }
+    }
+
+    private byte[] createByteaImage() {
+
+//        todo преобразовать картинку в byte
     }
 
 }

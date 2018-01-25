@@ -192,7 +192,7 @@ public class Front {
     void loadImage(String path) {
         try {
             agentImage = ImageIO.read(new File(path));
-            agentImage = Scalr.resize(agentImage, 250); // TODO: 24.01.2018 ВОТ ТУТ ВОПРОС!
+            agentImage = Scalr.resize(agentImage, 250);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -223,35 +223,31 @@ public class Front {
         return agentImage;
     }
 
-    public JTextField getNameTextField() {
+    JTextField getNameTextField() {
         return nameTextField;
     }
 
-    public JRadioButton getSexMaleButton() {
+    JRadioButton getSexMaleButton() {
         return sexMaleButton;
     }
 
-    public JRadioButton getSexFemaleButton() {
-        return sexFemaleButton;
-    }
-
-    public JPasswordField getNicknameField() {
+    JPasswordField getNicknameField() {
         return nicknameField;
     }
 
-    public JCheckBox getPatriotismCheckBox() {
+    JCheckBox getPatriotismCheckBox() {
         return patriotismCheckBox;
     }
 
-    public JCheckBox getMentallyStrongCheckBox() {
+    JCheckBox getMentallyStrongCheckBox() {
         return mentallyStrongCheckBox;
     }
 
-    public JCheckBox getPhysicalPowerCheckBox() {
+    JCheckBox getPhysicalPowerCheckBox() {
         return physicalPowerCheckBox;
     }
 
-    public JComboBox getStatusComboBox() {
+    JComboBox getStatusComboBox() {
         return statusComboBox;
     }
 }

@@ -11,16 +11,16 @@ import java.util.Arrays;
 /**
  * Copyright (c) Anton on 18.01.2018.
  */
-public class Controller {
+class Controller {
     FBIAgent fbiAgent = new FBIAgent();
 
     private Front front;
 
-    public Controller(Front front) {
+    Controller(Front front) {
         this.front = front;
     }
 
-    public void onAddButtonClick() {
+    void onAddButtonClick() {
 
         FBIAgent fbiAgent = new FBIAgent();
         fbiAgent.setSurname(front.getSurnameTextField().getText());
@@ -68,7 +68,7 @@ public class Controller {
     }
 
 
-    public void onImageLabelClick(JLabel imageLabel) {
+    void onImageLabelClick(JLabel imageLabel) {
         JFileChooser fileOpen = new JFileChooser();
         MyFileFilter fileFilter = new MyFileFilter();
 

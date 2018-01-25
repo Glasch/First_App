@@ -20,12 +20,17 @@ import java.io.IOException;
 public class Front {
 
 
-
-
-   private BufferedImage agentImage;
-   private Controller controller;
-   private JTextField surnameTextField;
-
+    private BufferedImage agentImage;
+    private Controller controller;
+    private JTextField surnameTextField;
+    private JTextField nameTextField;
+    private JRadioButton sexMaleButton;
+    private JRadioButton sexFemaleButton;
+    private JPasswordField nicknameField;
+    private JCheckBox patriotismCheckBox;
+    private JCheckBox mentallyStrongCheckBox;
+    private JCheckBox physicalPowerCheckBox;
+    private JComboBox statusComboBox;
 
     public Front() {
         controller = new Controller(this);
@@ -36,12 +41,10 @@ public class Front {
         JFrame frame = new JFrame();
 
 
-
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(900, 600);
         frame.setLayout(new BorderLayout(5, 5));
-
 
 
         initTopPanel(frame);
@@ -58,7 +61,7 @@ public class Front {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-           //   controller.onAddButtonClick();
+                controller.onAddButtonClick();
                 JOptionPane.showMessageDialog(frame, "           AGENT ADDED!");
             }
         });
@@ -103,14 +106,14 @@ public class Front {
         JLabel nameLabel = new JLabel("NAME");
         panel.add(nameLabel);
         nameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        JTextField nameTextField = new JTextField();
+        nameTextField = new JTextField();
         panel.add(nameTextField);
 
         JLabel sexLabel = new JLabel("SEX");
         panel.add(sexLabel);
         sexLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        JRadioButton sexMaleButton = new JRadioButton("MALE");
-        JRadioButton sexFemaleButton = new JRadioButton("FEMALE");
+        sexMaleButton = new JRadioButton("MALE");
+        sexFemaleButton = new JRadioButton("FEMALE");
         createSexGroup(sexMaleButton, sexFemaleButton);
         Box box = Box.createVerticalBox();
         box.add(sexMaleButton);
@@ -122,15 +125,15 @@ public class Front {
         JLabel nicknameLabel = new JLabel("NICKNAME");
         panel.add(nicknameLabel);
         nicknameLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        JPasswordField nicknameField = new JPasswordField();
+        nicknameField = new JPasswordField();
         panel.add(nicknameField);
 
         JLabel specialCharacteristicsLabel = new JLabel("SPECIAL CHARACTERISTICS");
         panel.add(specialCharacteristicsLabel);
         specialCharacteristicsLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        JCheckBox physicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
-        JCheckBox mentallyStrongCheckBox = new JCheckBox("MENTAL STRENGTH");
-        JCheckBox patriotismCheckBox = new JCheckBox("PATRIOTISM");
+         physicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
+        mentallyStrongCheckBox = new JCheckBox("MENTAL STRENGTH");
+        patriotismCheckBox = new JCheckBox("PATRIOTISM");
         Box box1 = Box.createVerticalBox();
         box1.add(physicalPowerCheckBox);
         box1.add(mentallyStrongCheckBox);
@@ -140,10 +143,8 @@ public class Front {
         box1.setAlignmentX(Box.RIGHT_ALIGNMENT);
 
 
-
-
         JLabel statusLabel = new JLabel("STATUS");
-        JComboBox <FBIAgentStatus> statusComboBox = new JComboBox <>(FBIAgentStatus.values());
+        statusComboBox = new JComboBox <>(FBIAgentStatus.values());
         panel.add(statusLabel);
         statusLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         panel.add(statusComboBox);
@@ -181,8 +182,9 @@ public class Front {
             }
         });
         JPanel panel = new JPanel();
+        panel.setMaximumSize(new Dimension(250, 250));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        panel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         frame.add(panel, BorderLayout.WEST);
         panel.add(imageLabel);
     }
@@ -190,7 +192,7 @@ public class Front {
     void loadImage(String path) {
         try {
             agentImage = ImageIO.read(new File(path));
-            agentImage = Scalr.resize(agentImage,450,250); // TODO: 24.01.2018 ВОТ ТУТ ВОПРОС!
+            agentImage = Scalr.resize(agentImage, 250); // TODO: 24.01.2018 ВОТ ТУТ ВОПРОС!
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -205,9 +207,6 @@ public class Front {
     }
 
 
-
-
-
     private void createSexGroup(JRadioButton sexMale, JRadioButton sexFemale) {
         ButtonGroup sexGroup = new ButtonGroup();
         sexGroup.add(sexMale);
@@ -215,17 +214,44 @@ public class Front {
     }
 
 
-
-
     JTextField getSurnameTextField() {
         return surnameTextField;
     }
+
 
     BufferedImage getAgentImage() {
         return agentImage;
     }
 
+    public JTextField getNameTextField() {
+        return nameTextField;
+    }
 
+    public JRadioButton getSexMaleButton() {
+        return sexMaleButton;
+    }
 
+    public JRadioButton getSexFemaleButton() {
+        return sexFemaleButton;
+    }
 
+    public JPasswordField getNicknameField() {
+        return nicknameField;
+    }
+
+    public JCheckBox getPatriotismCheckBox() {
+        return patriotismCheckBox;
+    }
+
+    public JCheckBox getMentallyStrongCheckBox() {
+        return mentallyStrongCheckBox;
+    }
+
+    public JCheckBox getPhysicalPowerCheckBox() {
+        return physicalPowerCheckBox;
+    }
+
+    public JComboBox getStatusComboBox() {
+        return statusComboBox;
+    }
 }

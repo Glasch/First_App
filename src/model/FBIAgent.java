@@ -9,9 +9,10 @@ public class FBIAgent {
   private   Boolean sex;
   private   String nickname;
   private   boolean physicalPower;
-  private   boolean mentalStrenght;
+  private   boolean mentalStrength;
   private   boolean patriotism;
   private   FBIAgentStatus status;
+  private   byte image;
 
     public String getSurname() {
         return surname;
@@ -53,12 +54,12 @@ public class FBIAgent {
         this.physicalPower = physicalPower;
     }
 
-    public boolean isMentalStrenght() {
-        return mentalStrenght;
+    public boolean isMentalStrength() {
+        return mentalStrength;
     }
 
-    public void setMentalStrenght(boolean mentalStrenght) {
-        this.mentalStrenght = mentalStrenght;
+    public void setMentalStrength(boolean mentalStrength) {
+        this.mentalStrength = mentalStrength;
     }
 
     public boolean isPatriotism() {
@@ -75,5 +76,13 @@ public class FBIAgent {
 
     public void setStatus(FBIAgentStatus status) {
         this.status = status;
+    }
+
+    public byte getImage() {
+        return image;
+    }
+
+    public void setImage(byte image) {
+        this.image = image;
     }
 }

@@ -4,15 +4,16 @@ package model;
  * Copyright (c) Anton on 18.01.2018.
  */
 public class FBIAgent {
-  private   String surname;
-  private   String name;
-  private   Boolean sex;
-  private   String nickname;
-  private   boolean physicalPower;
-  private   boolean mentalStrength;
-  private   boolean patriotism;
-  private   FBIAgentStatus status;
-  private   byte[] image;
+    private int id;
+    private String surname;
+    private String name;
+    private Boolean sex;
+    private String nickname;
+    private boolean physicalPower;
+    private boolean mentalStrength;
+    private boolean patriotism;
+    private FBIAgentStatus status;
+    private byte[] image;
 
     public String getSurname() {
         return surname;
@@ -84,5 +85,13 @@ public class FBIAgent {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

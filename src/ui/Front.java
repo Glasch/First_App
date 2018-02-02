@@ -6,13 +6,13 @@ import org.imgscalr.Scalr;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 /**
  * Copyright (c) Anton on 17.01.2018.
@@ -25,12 +25,14 @@ public class Front {
     private JTextField surnameTextField;
     private JTextField nameTextField;
     private JRadioButton sexMaleButton;
-    private JRadioButton sexFemaleButton;
     private JPasswordField nicknameField;
     private JCheckBox patriotismCheckBox;
     private JCheckBox mentallyStrongCheckBox;
     private JCheckBox physicalPowerCheckBox;
     private JComboBox statusComboBox;
+    private JRadioButton sexFemaleButton;
+    private JLabel imageLabel;
+    private JTextField loadAgentTextField;
 
     public Front() {
         controller = new Controller(this);
@@ -58,11 +60,32 @@ public class Front {
         frame.add(panel, BorderLayout.SOUTH);
         JButton addButton = new JButton("ADD");
         panel.add(addButton);
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.onAddButtonClick();
-                JOptionPane.showMessageDialog(frame, "           AGENT ADDED!");
+
+        JButton loadButton = new JButton("LOAD AGENT");
+        panel.add(loadButton);
+
+        loadAgentTextField = new JTextField(20);
+        panel.add(loadAgentTextField);
+
+        loadButton.addActionListener(e -> {
+            if (!loadAgentTextField.getText().isEmpty()) {
+                controller.onLoadButtonClick();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Input Surname");
+            }
+        });
+
+        addButton.addActionListener(e -> {
+            if (controller.validateInput()) {
+                try {
+                    controller.onAddButtonClick();
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(frame, e1.getMessage(), "Can not save agent", ERROR_MESSAGE);
+                    return;
+                }
+                JOptionPane.showMessageDialog(frame, "AGENT ADDED!");
+            } else {
+                JOptionPane.showMessageDialog(frame, controller.getMessage(), "Validation failed", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -78,11 +101,28 @@ public class Front {
         frame.add(panel, BorderLayout.EAST);
 
 
+
         JLabel previousTasksLabel = new JLabel("PREVIOUS TASKS");
         panel.add(previousTasksLabel);
 
-        JTable previousTasksTable = new JTable(5, 4);
-        panel.add(previousTasksTable);
+
+
+
+       TableModel tableModel = new TableModel();
+       JTable previousTasksTable = new JTable(tableModel);
+       JScrollPane previousTasksTableScrollPane = new JScrollPane(previousTasksTable);
+       previousTasksTableScrollPane.setPreferredSize(new Dimension(300,150));
+
+        JPanel p2 = new JPanel();
+
+        p2.add(new JButton("ADD NEW"));
+        p2.add(new JButton("DELETE"));
+        p2.add(new JButton("CLEAR"));
+
+
+        panel.add(previousTasksTableScrollPane);
+        panel.add(p2);
+
 
         JLabel otherCommentsLabel = new JLabel("OTHER COMMENTS");
         panel.add(otherCommentsLabel);
@@ -113,6 +153,7 @@ public class Front {
         panel.add(sexLabel);
         sexLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         sexMaleButton = new JRadioButton("MALE");
+        sexMaleButton.setSelected(true);
         sexFemaleButton = new JRadioButton("FEMALE");
         createSexGroup(sexMaleButton, sexFemaleButton);
         Box box = Box.createVerticalBox();
@@ -131,7 +172,7 @@ public class Front {
         JLabel specialCharacteristicsLabel = new JLabel("SPECIAL CHARACTERISTICS");
         panel.add(specialCharacteristicsLabel);
         specialCharacteristicsLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-         physicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
+        physicalPowerCheckBox = new JCheckBox("PHYSICAL POWER");
         mentallyStrongCheckBox = new JCheckBox("MENTAL STRENGTH");
         patriotismCheckBox = new JCheckBox("PATRIOTISM");
         Box box1 = Box.createVerticalBox();
@@ -153,7 +194,7 @@ public class Front {
     private void initLeftPanel(JFrame frame) {
         String path = "photo.jpg";
         loadImage(path);
-        JLabel imageLabel = new JLabel(new ImageIcon(agentImage));
+        imageLabel = new JLabel(new ImageIcon(agentImage));
         imageLabel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -223,6 +264,10 @@ public class Front {
         return agentImage;
     }
 
+    public void setAgentImage(BufferedImage agentImage) {
+        this.agentImage = agentImage;
+    }
+
     JTextField getNameTextField() {
         return nameTextField;
     }
@@ -250,4 +295,25 @@ public class Front {
     JComboBox getStatusComboBox() {
         return statusComboBox;
     }
+
+    public JRadioButton getSexFemaleButton() {
+        return sexFemaleButton;
+    }
+
+    public void setSexFemaleButton(JRadioButton sexFemaleButton) {
+        this.sexFemaleButton = sexFemaleButton;
+    }
+
+    public JLabel getImageLabel() {
+        return imageLabel;
+    }
+
+    public void setImageLabel(JLabel imageLabel) {
+        this.imageLabel = imageLabel;
+    }
+
+    public JTextField getLoadAgentTextField() {
+        return loadAgentTextField;
+    }
 }
+

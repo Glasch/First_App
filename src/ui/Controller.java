@@ -6,29 +6,27 @@ import model.FBIAgentStatus;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Files;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
  * Copyright (c) Anton on 18.01.2018.
  */
 class Controller {
-    FBIAgent fbiAgent = new FBIAgent();
+    //  FBIAgent fbiAgent = new FBIAgent();
 
     private Front front;
+    private String message;
 
     Controller(Front front) {
         this.front = front;
     }
 
-    void onAddButtonClick() {
-
+    void onAddButtonClick() throws IOException {
         FBIAgent fbiAgent = new FBIAgent();
         fbiAgent.setSurname(front.getSurnameTextField().getText());
         fbiAgent.setName(front.getNameTextField().getText());
@@ -38,43 +36,44 @@ class Controller {
         fbiAgent.setMentalStrength(front.getMentallyStrongCheckBox().isSelected());
         fbiAgent.setPatriotism(front.getPatriotismCheckBox().isSelected());
         fbiAgent.setStatus(selectStatus());
-        fbiAgent.setImage(createByteaImage());
-
-        System.out.println(fbiAgent.getSurname());
-        System.out.println(fbiAgent.getName());
-        System.out.println(fbiAgent.getSex());
-        System.out.println(fbiAgent.getNickname());
-        System.out.println(fbiAgent.isPhysicalPower());
-        System.out.println(fbiAgent.isMentalStrength());
-        System.out.println(fbiAgent.isPatriotism());
-        System.out.println(fbiAgent.getStatus());
-
+        fbiAgent.setImage(JPGtoByte(front.getAgentImage()));
         DBManager dbManager = new DBManager();
         try {
             dbManager.saveAgent(fbiAgent);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+//        System.out.println(fbiAgent.getSurname());
+//        System.out.println(fbiAgent.getName());
+//        System.out.println(fbiAgent.getSex());
+//        System.out.println(fbiAgent.isPhysicalPower());
+//        System.out.println(fbiAgent.isMentalStrength());
+//        System.out.println(fbiAgent.isPatriotism());
+//        System.out.println(fbiAgent.getStatus());
+//        System.out.println(JPGtoByte(front.getAgentImage()));
 
 
     }
 
+    public boolean validateInput() {
+        if ("".equals(front.getSurnameTextField().getText())) {
+            message = "Input Surname";
+            return false;
+        }
+        if ("".equals(front.getNameTextField().getText())) {
+            message = "Input Name";
+            return false;
+        }
+        if (front.getNicknameField().getPassword().length == 0) {
+            message = "Input Nickname";
+            return false;
+        }
+        return true;
+    }
+
 
     private FBIAgentStatus selectStatus() {
-        if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.READY) {
-            return FBIAgentStatus.READY;
-        } else if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.DECEASED) {
-            return FBIAgentStatus.DECEASED;
-        } else if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.INJURED) {
-            return FBIAgentStatus.INJURED;
-        } else if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.LOST) {
-            return FBIAgentStatus.LOST;
-        } else if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.ON_THE_TASK) {
-            return FBIAgentStatus.ON_THE_TASK;
-        } else if (front.getStatusComboBox().getSelectedItem() == FBIAgentStatus.TRAITOR) {
-            return FBIAgentStatus.TRAITOR;
-        } else return null;
-
+        return (FBIAgentStatus) front.getStatusComboBox().getSelectedItem();
     }
 
 
@@ -98,9 +97,52 @@ class Controller {
         }
     }
 
-    private byte[] createByteaImage() {
+    private byte[] JPGtoByte(BufferedImage image) throws IOException {
 
-//        todo преобразовать картинку в byte
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+//            ByteArrayInputStream imageByteStream = new ByteArrayInputStream(imageInByte);
+//            return imageByteStream;
+        return imageInByte;
+
     }
 
+    private  BufferedImage bytetoJPG (byte[] bytes) throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+        return ImageIO.read(is);
+    }
+
+
+    public void onLoadButtonClick() {
+
+
+
+        DBManager dbManager = new DBManager();
+
+        try {
+            FBIAgent fbiAgent = dbManager.loadAgent(front.getLoadAgentTextField().getText());
+            front.getSurnameTextField().setText(fbiAgent.getSurname());
+            front.getNameTextField().setText(fbiAgent.getName());
+            front.getSexMaleButton().setSelected(fbiAgent.getSex());
+            front.getSexFemaleButton().setSelected(!fbiAgent.getSex());
+            front.getPhysicalPowerCheckBox().setSelected(fbiAgent.isPhysicalPower());
+            front.getMentallyStrongCheckBox().setSelected(fbiAgent.isMentalStrength());
+            front.getPatriotismCheckBox().setSelected(fbiAgent.isPatriotism());
+            front.getStatusComboBox().setSelectedItem(fbiAgent.getStatus());
+            front.getImageLabel().setIcon(new ImageIcon(bytetoJPG(fbiAgent.getImage())));
+
+
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+
+
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

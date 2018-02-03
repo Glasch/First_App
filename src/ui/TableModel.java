@@ -46,9 +46,7 @@ public class TableModel extends AbstractTableModel {
     }
 
     public  void addData(String[] row){
-        String[] rowTable = new String[getColumnCount()];
-        rowTable = row;
-        dataArrayList.add(rowTable);
+       dataArrayList.add(row);
     }
 
 

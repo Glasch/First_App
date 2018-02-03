@@ -1,11 +1,17 @@
 package ui;
 
+import javafx.scene.control.DateCell;
 import model.FBIAgentStatus;
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -33,6 +39,11 @@ public class Front {
     private JRadioButton sexFemaleButton;
     private JLabel imageLabel;
     private JTextField loadAgentTextField;
+    private JTextField cityTextField;
+    private JDatePickerImpl startDatePicker;
+    private JDatePickerImpl endDatePicker;
+    private JTable previousTasksTable;
+
 
     public Front() {
         controller = new Controller(this);
@@ -109,15 +120,27 @@ public class Front {
 
 
        TableModel tableModel = new TableModel();
-       JTable previousTasksTable = new JTable(tableModel);
+       previousTasksTable = new JTable(tableModel);
        JScrollPane previousTasksTableScrollPane = new JScrollPane(previousTasksTable);
        previousTasksTableScrollPane.setPreferredSize(new Dimension(300,150));
 
         JPanel p2 = new JPanel();
 
-        p2.add(new JButton("ADD NEW"));
-        p2.add(new JButton("DELETE"));
-        p2.add(new JButton("CLEAR"));
+        JButton addToTable = new JButton("ADD NEW");
+        addToTable.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createAddPreviousTaskFrame(frame);
+            }
+
+
+        });
+        JButton deleteFromTable = new JButton("DELETE");
+        JButton clearTable = new JButton("CLEAR");
+
+        p2.add(addToTable);
+        p2.add(deleteFromTable);
+        p2.add(clearTable);
 
 
         panel.add(previousTasksTableScrollPane);
@@ -255,6 +278,64 @@ public class Front {
     }
 
 
+
+
+    private void createAddPreviousTaskFrame(JFrame frame) {
+        JFrame addNewPreviousTaskFrame = new JFrame();
+        addNewPreviousTaskFrame.setSize(new Dimension(600,200));
+        addNewPreviousTaskFrame.setLayout( new GridLayout(2,3));
+
+        UtilDateModel startModel = new UtilDateModel();
+        UtilDateModel endModel = new UtilDateModel();
+
+        Box leftBox = new Box(BoxLayout.Y_AXIS);
+        JLabel startDateLabel = new JLabel("START DATE");
+        JDatePanelImpl startDatePanel = new JDatePanelImpl(startModel);
+        startDatePicker = new JDatePickerImpl(startDatePanel);
+        leftBox.add(startDateLabel);
+        leftBox.add(startDatePicker);
+
+        Box centerBox = new Box(BoxLayout.Y_AXIS);
+        JLabel endDateLabel = new JLabel("EDN DATE");
+        JDatePanelImpl endDatePanel = new JDatePanelImpl(endModel);
+        endDatePicker = new JDatePickerImpl(endDatePanel);
+        centerBox.add(endDateLabel);
+        centerBox.add(endDatePicker);
+
+
+
+        Box rightBox = new Box(BoxLayout.Y_AXIS);
+        JLabel cityLabel = new JLabel("CITY");
+        cityTextField = new JTextField(20);
+        rightBox.add(cityLabel);
+        rightBox.add(cityTextField);
+
+        JButton addPreviousTaskButton = new JButton("ADD");
+        addPreviousTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.onAddPreviousTaskClick();
+            }
+        });
+
+
+        JButton cancelAddingButton = new JButton("CANCEL ADDING");
+
+
+        addNewPreviousTaskFrame.add(leftBox);
+        addNewPreviousTaskFrame.add(centerBox);
+        addNewPreviousTaskFrame.add(rightBox);
+        addNewPreviousTaskFrame.add(addPreviousTaskButton);
+        addNewPreviousTaskFrame.add(cancelAddingButton);
+        addNewPreviousTaskFrame.pack();
+
+
+        addNewPreviousTaskFrame.setVisible(true);
+
+        frame.add(addNewPreviousTaskFrame);
+    }
+
+
     JTextField getSurnameTextField() {
         return surnameTextField;
     }
@@ -314,6 +395,26 @@ public class Front {
 
     public JTextField getLoadAgentTextField() {
         return loadAgentTextField;
+    }
+
+    public JTextField getCityTextField() {
+        return cityTextField;
+    }
+
+    public JDatePickerImpl getStartDatePicker() {
+        return startDatePicker;
+    }
+
+    public JDatePickerImpl getEndDatePicker() {
+        return endDatePicker;
+    }
+
+    public JTable getPreviousTasksTable() {
+        return previousTasksTable;
+    }
+
+    public void setPreviousTasksTable(JTable previousTasksTable) {
+        this.previousTasksTable = previousTasksTable;
     }
 }
 

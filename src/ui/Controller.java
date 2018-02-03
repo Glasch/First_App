@@ -145,4 +145,11 @@ class Controller {
     public String getMessage() {
         return message;
     }
+
+
+    public void onAddPreviousTaskClick() {
+
+
+
+    }
 }

@@ -1,5 +1,7 @@
 package ui;
 
+import model.FBIAgentPreviousTask;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
@@ -8,30 +10,16 @@ import java.util.ArrayList;
  */
 public class TableModel extends AbstractTableModel {
 
-   private  int columnCount = 4;
-   private ArrayList<String []> dataArrayList;
-
-    public TableModel(){
-          dataArrayList = new ArrayList <>();
-          for (int i = 0; i<dataArrayList.size(); i++){
-              dataArrayList.add(new String[getColumnCount()]);
-          }
-    }
+    ArrayList<FBIAgentPreviousTask> previousTasks = new ArrayList <>() ;
 
     @Override
     public int getRowCount() {
-        return dataArrayList.size();
+        return previousTasks.size();
     }
 
     @Override
     public int getColumnCount() {
-        return columnCount;
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        String[] rows  = dataArrayList.get(rowIndex);
-        return rows[columnIndex];
+        return 4;
     }
 
     @Override
@@ -45,10 +33,36 @@ public class TableModel extends AbstractTableModel {
         return "";
     }
 
-    public  void addData(String[] row){
-       dataArrayList.add(row);
+
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return true;
     }
 
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        FBIAgentPreviousTask previousTask = previousTasks.get(rowIndex);
+
+        switch (columnIndex) {
+            case 0:
+                return rowIndex+1;
+            case 1:
+                return previousTask.getStartDate();
+            case 2:
+                return previousTask.getEndDate();
+            case 3:
+                return previousTask.getCity();
+        }
+
+        return "";
+    }
+
+    void addData(FBIAgentPreviousTask previousTask){
+        previousTasks.add(previousTask);
+        fireTableRowsInserted(0, previousTasks.size());
+    }
 
 }
 

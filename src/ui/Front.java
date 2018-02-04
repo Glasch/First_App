@@ -1,6 +1,5 @@
 package ui;
 
-import javafx.scene.control.DateCell;
 import model.FBIAgentStatus;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -26,6 +25,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 public class Front {
 
 
+    private String[][] previousTasks;
     private BufferedImage agentImage;
     private Controller controller;
     private JTextField surnameTextField;
@@ -43,6 +43,9 @@ public class Front {
     private JDatePickerImpl startDatePicker;
     private JDatePickerImpl endDatePicker;
     private JTable previousTasksTable;
+    private UtilDateModel startModel;
+    private UtilDateModel endModel;
+    private TableModel tableModel;
 
 
     public Front() {
@@ -112,17 +115,14 @@ public class Front {
         frame.add(panel, BorderLayout.EAST);
 
 
-
         JLabel previousTasksLabel = new JLabel("PREVIOUS TASKS");
         panel.add(previousTasksLabel);
 
 
-
-
-       TableModel tableModel = new TableModel();
-       previousTasksTable = new JTable(tableModel);
-       JScrollPane previousTasksTableScrollPane = new JScrollPane(previousTasksTable);
-       previousTasksTableScrollPane.setPreferredSize(new Dimension(300,150));
+         tableModel = new TableModel();
+        previousTasksTable = new JTable(tableModel);
+        JScrollPane previousTasksTableScrollPane = new JScrollPane(previousTasksTable);
+        previousTasksTableScrollPane.setPreferredSize(new Dimension(300, 150));
 
         JPanel p2 = new JPanel();
 
@@ -278,15 +278,13 @@ public class Front {
     }
 
 
-
-
     private void createAddPreviousTaskFrame(JFrame frame) {
         JFrame addNewPreviousTaskFrame = new JFrame();
-        addNewPreviousTaskFrame.setSize(new Dimension(600,200));
-        addNewPreviousTaskFrame.setLayout( new GridLayout(2,3));
+        addNewPreviousTaskFrame.setSize(new Dimension(600, 200));
+        addNewPreviousTaskFrame.setLayout(new GridLayout(2, 3));
 
-        UtilDateModel startModel = new UtilDateModel();
-        UtilDateModel endModel = new UtilDateModel();
+        startModel = new UtilDateModel();
+        endModel = new UtilDateModel();
 
         Box leftBox = new Box(BoxLayout.Y_AXIS);
         JLabel startDateLabel = new JLabel("START DATE");
@@ -301,7 +299,6 @@ public class Front {
         endDatePicker = new JDatePickerImpl(endDatePanel);
         centerBox.add(endDateLabel);
         centerBox.add(endDatePicker);
-
 
 
         Box rightBox = new Box(BoxLayout.Y_AXIS);
@@ -413,8 +410,25 @@ public class Front {
         return previousTasksTable;
     }
 
-    public void setPreviousTasksTable(JTable previousTasksTable) {
-        this.previousTasksTable = previousTasksTable;
+    public UtilDateModel getStartModel() {
+        return startModel;
+    }
+
+    public UtilDateModel getEndModel() {
+        return endModel;
+    }
+
+    public String[][] getPreviousTasks() {
+        return previousTasks;
+    }
+
+    public void setPreviousTasks(String[][] previousTasks) {
+        this.previousTasks = previousTasks;
+    }
+
+    public TableModel getTableModel() {
+        return tableModel;
     }
 }
+
 

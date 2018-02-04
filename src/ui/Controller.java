@@ -1,8 +1,12 @@
 package ui;
 
+import javafx.scene.control.DatePicker;
 import model.DBManager;
 import model.FBIAgent;
+import model.FBIAgentPreviousTask;
 import model.FBIAgentStatus;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 /**
@@ -21,6 +26,7 @@ class Controller {
 
     private Front front;
     private String message;
+    private TableModel tableModel;
 
     Controller(Front front) {
         this.front = front;
@@ -147,7 +153,38 @@ class Controller {
     }
 
 
+
+
+
+
+    public FBIAgentPreviousTask createPreviousTask() {
+
+        FBIAgentPreviousTask previousTask = new FBIAgentPreviousTask();
+
+        UtilDateModel start = front.getStartModel();
+        int startMonth = start.getMonth() + 1;
+        String startDate =  start.getDay() + "/" + startMonth + "/" + start.getYear();
+
+
+        UtilDateModel end = front.getEndModel();
+        int endMonth = end.getMonth() + 1;
+        String endDate = end.getDay() + "/" + endMonth + "/" + end.getYear();
+
+        String city = front.getCityTextField().getText();
+
+        previousTask.setStartDate(startDate);
+        previousTask.setEndDate(endDate);
+        previousTask.setCity(city);
+
+        return previousTask;
+    }
+
+
     public void onAddPreviousTaskClick() {
+        FBIAgentPreviousTask previousTask = createPreviousTask();
+        tableModel = front.getTableModel();
+        tableModel.addData(previousTask);
+
 
 
 

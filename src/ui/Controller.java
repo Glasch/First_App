@@ -1,11 +1,9 @@
 package ui;
 
-import javafx.scene.control.DatePicker;
 import model.DBManager;
 import model.FBIAgent;
 import model.FBIAgentPreviousTask;
 import model.FBIAgentStatus;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.imageio.ImageIO;
@@ -15,7 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 /**
@@ -34,6 +33,7 @@ class Controller {
 
     void onAddButtonClick() throws IOException {
         FBIAgent fbiAgent = new FBIAgent();
+        fbiAgent.setPreviousTasks(tableModel.getPreviousTasks());
         fbiAgent.setSurname(front.getSurnameTextField().getText());
         fbiAgent.setName(front.getNameTextField().getText());
         fbiAgent.setSex(front.getSexMaleButton().isSelected());
@@ -49,15 +49,6 @@ class Controller {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-//        System.out.println(fbiAgent.getSurname());
-//        System.out.println(fbiAgent.getName());
-//        System.out.println(fbiAgent.getSex());
-//        System.out.println(fbiAgent.isPhysicalPower());
-//        System.out.println(fbiAgent.isMentalStrength());
-//        System.out.println(fbiAgent.isPatriotism());
-//        System.out.println(fbiAgent.getStatus());
-//        System.out.println(JPGtoByte(front.getAgentImage()));
-
 
     }
 
@@ -116,14 +107,13 @@ class Controller {
 
     }
 
-    private  BufferedImage bytetoJPG (byte[] bytes) throws IOException {
+    private BufferedImage byteToJPG(byte[] bytes) throws IOException {
         ByteArrayInputStream is = new ByteArrayInputStream(bytes);
         return ImageIO.read(is);
     }
 
 
     public void onLoadButtonClick() {
-
 
 
         DBManager dbManager = new DBManager();
@@ -138,7 +128,7 @@ class Controller {
             front.getMentallyStrongCheckBox().setSelected(fbiAgent.isMentalStrength());
             front.getPatriotismCheckBox().setSelected(fbiAgent.isPatriotism());
             front.getStatusComboBox().setSelectedItem(fbiAgent.getStatus());
-            front.getImageLabel().setIcon(new ImageIcon(bytetoJPG(fbiAgent.getImage())));
+            front.getImageLabel().setIcon(new ImageIcon(byteToJPG(fbiAgent.getImage())));
 
 
         } catch (Exception e) {
@@ -153,27 +143,19 @@ class Controller {
     }
 
 
-
-
-
-
     public FBIAgentPreviousTask createPreviousTask() {
 
         FBIAgentPreviousTask previousTask = new FBIAgentPreviousTask();
 
-        UtilDateModel start = front.getStartModel();
-        int startMonth = start.getMonth() + 1;
-        String startDate =  start.getDay() + "/" + startMonth + "/" + start.getYear();
-
-
-        UtilDateModel end = front.getEndModel();
-        int endMonth = end.getMonth() + 1;
-        String endDate = end.getDay() + "/" + endMonth + "/" + end.getYear();
+        UtilDateModel start = front.getStartDatePickerModel();
+        UtilDateModel end = front.getEndDatePickerModel();
 
         String city = front.getCityTextField().getText();
+        LocalDate startLocal = start.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        previousTask.setStartDate(startLocal);
 
-        previousTask.setStartDate(startDate);
-        previousTask.setEndDate(endDate);
+        LocalDate endLocal = end.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        previousTask.setEndDate(endLocal);
         previousTask.setCity(city);
 
         return previousTask;
@@ -186,7 +168,15 @@ class Controller {
         tableModel.addData(previousTask);
 
 
+    }
 
+    public String validatePreviousTask() {
+        UtilDateModel start = front.getStartDatePickerModel();
+        UtilDateModel end = front.getEndDatePickerModel();
 
+        if (start.getValue().after(end.getValue())) {
+            return "Dates are incorrect!";
+        }
+        return null;
     }
 }

@@ -8,6 +8,7 @@ import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +26,6 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 public class Front {
 
 
-    private String[][] previousTasks;
     private BufferedImage agentImage;
     private Controller controller;
     private JTextField surnameTextField;
@@ -40,11 +40,8 @@ public class Front {
     private JLabel imageLabel;
     private JTextField loadAgentTextField;
     private JTextField cityTextField;
-    private JDatePickerImpl startDatePicker;
-    private JDatePickerImpl endDatePicker;
-    private JTable previousTasksTable;
-    private UtilDateModel startModel;
-    private UtilDateModel endModel;
+    private UtilDateModel startDatePickerModel;
+    private UtilDateModel endDatePickerModel;
     private TableModel tableModel;
 
 
@@ -120,7 +117,13 @@ public class Front {
 
 
          tableModel = new TableModel();
-        previousTasksTable = new JTable(tableModel);
+        JTable previousTasksTable = new JTable(tableModel);
+        TableColumnModel m = previousTasksTable.getColumnModel();
+        DateRenderer dateRenderer = new DateRenderer();
+
+        m.getColumn(1).setCellRenderer(dateRenderer);
+        m.getColumn(2).setCellRenderer(dateRenderer);
+
         JScrollPane previousTasksTableScrollPane = new JScrollPane(previousTasksTable);
         previousTasksTableScrollPane.setPreferredSize(new Dimension(300, 150));
 
@@ -279,24 +282,24 @@ public class Front {
 
 
     private void createAddPreviousTaskFrame(JFrame frame) {
-        JFrame addNewPreviousTaskFrame = new JFrame();
+        JDialog addNewPreviousTaskFrame = new JDialog(frame, true);
         addNewPreviousTaskFrame.setSize(new Dimension(600, 200));
         addNewPreviousTaskFrame.setLayout(new GridLayout(2, 3));
 
-        startModel = new UtilDateModel();
-        endModel = new UtilDateModel();
+        startDatePickerModel = new UtilDateModel();
+        endDatePickerModel = new UtilDateModel();
 
         Box leftBox = new Box(BoxLayout.Y_AXIS);
         JLabel startDateLabel = new JLabel("START DATE");
-        JDatePanelImpl startDatePanel = new JDatePanelImpl(startModel);
-        startDatePicker = new JDatePickerImpl(startDatePanel);
+        JDatePanelImpl startDatePanel = new JDatePanelImpl(startDatePickerModel);
+        JDatePickerImpl startDatePicker = new JDatePickerImpl(startDatePanel);
         leftBox.add(startDateLabel);
         leftBox.add(startDatePicker);
 
         Box centerBox = new Box(BoxLayout.Y_AXIS);
-        JLabel endDateLabel = new JLabel("EDN DATE");
-        JDatePanelImpl endDatePanel = new JDatePanelImpl(endModel);
-        endDatePicker = new JDatePickerImpl(endDatePanel);
+        JLabel endDateLabel = new JLabel("END DATE");
+        JDatePanelImpl endDatePanel = new JDatePanelImpl(endDatePickerModel);
+        JDatePickerImpl endDatePicker = new JDatePickerImpl(endDatePanel);
         centerBox.add(endDateLabel);
         centerBox.add(endDatePicker);
 
@@ -311,7 +314,13 @@ public class Front {
         addPreviousTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.onAddPreviousTaskClick();
+
+                String res = controller.validatePreviousTask();
+                if(res == null) {
+                    controller.onAddPreviousTaskClick();
+                }else{
+                    JOptionPane.showMessageDialog(frame,res);
+                }
             }
         });
 
@@ -326,10 +335,8 @@ public class Front {
         addNewPreviousTaskFrame.add(cancelAddingButton);
         addNewPreviousTaskFrame.pack();
 
-
         addNewPreviousTaskFrame.setVisible(true);
 
-        frame.add(addNewPreviousTaskFrame);
     }
 
 
@@ -340,10 +347,6 @@ public class Front {
 
     BufferedImage getAgentImage() {
         return agentImage;
-    }
-
-    public void setAgentImage(BufferedImage agentImage) {
-        this.agentImage = agentImage;
     }
 
     JTextField getNameTextField() {
@@ -378,17 +381,11 @@ public class Front {
         return sexFemaleButton;
     }
 
-    public void setSexFemaleButton(JRadioButton sexFemaleButton) {
-        this.sexFemaleButton = sexFemaleButton;
-    }
 
     public JLabel getImageLabel() {
         return imageLabel;
     }
 
-    public void setImageLabel(JLabel imageLabel) {
-        this.imageLabel = imageLabel;
-    }
 
     public JTextField getLoadAgentTextField() {
         return loadAgentTextField;
@@ -398,33 +395,17 @@ public class Front {
         return cityTextField;
     }
 
-    public JDatePickerImpl getStartDatePicker() {
-        return startDatePicker;
+
+
+    public UtilDateModel getStartDatePickerModel() {
+        return startDatePickerModel;
     }
 
-    public JDatePickerImpl getEndDatePicker() {
-        return endDatePicker;
+    public UtilDateModel getEndDatePickerModel() {
+        return endDatePickerModel;
     }
 
-    public JTable getPreviousTasksTable() {
-        return previousTasksTable;
-    }
 
-    public UtilDateModel getStartModel() {
-        return startModel;
-    }
-
-    public UtilDateModel getEndModel() {
-        return endModel;
-    }
-
-    public String[][] getPreviousTasks() {
-        return previousTasks;
-    }
-
-    public void setPreviousTasks(String[][] previousTasks) {
-        this.previousTasks = previousTasks;
-    }
 
     public TableModel getTableModel() {
         return tableModel;

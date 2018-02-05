@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class TableModel extends AbstractTableModel {
 
-    ArrayList<FBIAgentPreviousTask> previousTasks = new ArrayList <>() ;
+    private ArrayList<FBIAgentPreviousTask> previousTasks = new ArrayList <>() ;
 
     @Override
     public int getRowCount() {
@@ -64,6 +64,9 @@ public class TableModel extends AbstractTableModel {
         fireTableRowsInserted(0, previousTasks.size());
     }
 
+    public ArrayList <FBIAgentPreviousTask> getPreviousTasks() {
+        return previousTasks;
+    }
 }
 
 

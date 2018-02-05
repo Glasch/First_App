@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 /**
  * Copyright (c) Anton on 18.01.2018.
  */
@@ -14,6 +16,7 @@ public class FBIAgent {
     private boolean patriotism;
     private FBIAgentStatus status;
     private byte[] image;
+    private ArrayList<FBIAgentPreviousTask> previousTasks = new ArrayList <>() ;
 
     public String getSurname() {
         return surname;
@@ -93,5 +96,13 @@ public class FBIAgent {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public ArrayList <FBIAgentPreviousTask> getPreviousTasks() {
+        return previousTasks;
+    }
+
+    public void setPreviousTasks(ArrayList <FBIAgentPreviousTask> previousTasks) {
+        this.previousTasks = previousTasks;
     }
 }

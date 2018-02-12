@@ -43,6 +43,7 @@ class Controller {
         fbiAgent.setPatriotism(front.getPatriotismCheckBox().isSelected());
         fbiAgent.setStatus(selectStatus());
         fbiAgent.setImage(JPGtoByte(front.getAgentImage()));
+        fbiAgent.setOtherComments(front.getOtherCommentsArea().getText());
         DBManager dbManager = new DBManager();
         try {
             dbManager.saveAgent(fbiAgent);
@@ -63,6 +64,10 @@ class Controller {
         }
         if (front.getNicknameField().getPassword().length == 0) {
             message = "Input Nickname";
+            return false;
+        }
+        if ("".equals(front.getOtherCommentsArea().getText())) {
+            message = "Input Comment";
             return false;
         }
         return true;
@@ -129,6 +134,10 @@ class Controller {
             front.getPatriotismCheckBox().setSelected(fbiAgent.isPatriotism());
             front.getStatusComboBox().setSelectedItem(fbiAgent.getStatus());
             front.getImageLabel().setIcon(new ImageIcon(byteToJPG(fbiAgent.getImage())));
+            front.getTableModel().getPreviousTasks().addAll(fbiAgent.getPreviousTasks());
+            front.getTableModel().fireTableDataChanged();
+            front.getOtherCommentsArea().setText(fbiAgent.getOtherComments());
+
 
 
         } catch (Exception e) {
@@ -178,5 +187,19 @@ class Controller {
             return "Dates are incorrect!";
         }
         return null;
+    }
+
+
+    public void onDeleteFromTableButtonClick() {
+        JTable table = front.getPreviousTasksTable();
+        tableModel = front.getTableModel();
+        tableModel.getPreviousTasks().remove(table.getSelectedRow());
+        tableModel.fireTableDataChanged();
+}
+
+    public void onClearTableButtonClick() {
+        tableModel = front.getTableModel();
+        tableModel.getPreviousTasks().clear();
+        tableModel.fireTableDataChanged();
     }
 }

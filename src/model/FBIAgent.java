@@ -17,6 +17,7 @@ public class FBIAgent {
     private FBIAgentStatus status;
     private byte[] image;
     private ArrayList<FBIAgentPreviousTask> previousTasks = new ArrayList <>() ;
+    private String otherComments;
 
     public String getSurname() {
         return surname;
@@ -104,5 +105,13 @@ public class FBIAgent {
 
     public void setPreviousTasks(ArrayList <FBIAgentPreviousTask> previousTasks) {
         this.previousTasks = previousTasks;
+    }
+
+    public String getOtherComments() {
+        return otherComments;
+    }
+
+    public void setOtherComments(String otherComments) {
+        this.otherComments = otherComments;
     }
 }

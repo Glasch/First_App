@@ -13,9 +13,9 @@ public class DBManager {
         Connection connection = getConnection();
         String sql = "INSERT INTO agent(\n" +
                 "             surname, \"name\", sex, nickname, physicalpower, mentalstrength, \n" +
-                "            patriotism, status, image)\n" +
+                "            patriotism, status, image, other_comments)\n" +
                 "    VALUES (?, ?, ?, ?, ?, ?, \n" +
-                "            ?, ?::agentstatus, ?)";
+                "            ?, ?::agentstatus, ?, ?)";
         PreparedStatement st = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         st.setString(1, agent.getSurname());
         st.setString(2, agent.getName());
@@ -26,6 +26,7 @@ public class DBManager {
         st.setBoolean(7, agent.isPatriotism());
         st.setString(8, agent.getStatus().toString());
         st.setBytes(9, agent.getImage());
+        st.setString(10,agent.getOtherComments());
 
         st.executeUpdate();
         ResultSet keys = st.getGeneratedKeys();
@@ -81,6 +82,7 @@ public class DBManager {
             fbiAgent.setStatus(FBIAgentStatus.valueOf(status));
             fbiAgent.setImage(rs.getBytes("image"));
             loadPreviousTasks(connection,fbiAgent);
+            fbiAgent.setOtherComments(rs.getString("other_comments"));
             connection.close();
             return fbiAgent;
         }

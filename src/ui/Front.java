@@ -43,6 +43,8 @@ public class Front {
     private UtilDateModel startDatePickerModel;
     private UtilDateModel endDatePickerModel;
     private TableModel tableModel;
+    private JTextArea otherCommentsArea;
+    private JTable previousTasksTable;
 
 
     public Front() {
@@ -117,7 +119,7 @@ public class Front {
 
 
          tableModel = new TableModel();
-        JTable previousTasksTable = new JTable(tableModel);
+         previousTasksTable = new JTable(tableModel);
         TableColumnModel m = previousTasksTable.getColumnModel();
         DateRenderer dateRenderer = new DateRenderer();
 
@@ -139,11 +141,24 @@ public class Front {
 
         });
         JButton deleteFromTable = new JButton("DELETE");
-        JButton clearTable = new JButton("CLEAR");
+        deleteFromTable.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.onDeleteFromTableButtonClick();
+            }
+        });
+
+        JButton clearTableButton = new JButton("CLEAR");
+        clearTableButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.onClearTableButtonClick();
+            }
+        });
 
         p2.add(addToTable);
         p2.add(deleteFromTable);
-        p2.add(clearTable);
+        p2.add(clearTableButton);
 
 
         panel.add(previousTasksTableScrollPane);
@@ -152,7 +167,7 @@ public class Front {
 
         JLabel otherCommentsLabel = new JLabel("OTHER COMMENTS");
         panel.add(otherCommentsLabel);
-        JTextArea otherCommentsArea = new JTextArea();
+         otherCommentsArea = new JTextArea();
         panel.add(otherCommentsArea);
     }
 
@@ -325,14 +340,24 @@ public class Front {
         });
 
 
-        JButton cancelAddingButton = new JButton("CANCEL ADDING");
+        JButton finishAddingButton = new JButton("FINISH ADDING");
+        finishAddingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               addNewPreviousTaskFrame.dispose();
+            }
+        });
+
+
+
+
 
 
         addNewPreviousTaskFrame.add(leftBox);
         addNewPreviousTaskFrame.add(centerBox);
         addNewPreviousTaskFrame.add(rightBox);
         addNewPreviousTaskFrame.add(addPreviousTaskButton);
-        addNewPreviousTaskFrame.add(cancelAddingButton);
+        addNewPreviousTaskFrame.add(finishAddingButton);
         addNewPreviousTaskFrame.pack();
 
         addNewPreviousTaskFrame.setVisible(true);
@@ -409,6 +434,22 @@ public class Front {
 
     public TableModel getTableModel() {
         return tableModel;
+    }
+
+    public JTextArea getOtherCommentsArea() {
+        return otherCommentsArea;
+    }
+
+    public void setOtherCommentsArea(JTextArea otherCommentsArea) {
+        this.otherCommentsArea = otherCommentsArea;
+    }
+
+    public JTable getPreviousTasksTable() {
+        return previousTasksTable;
+    }
+
+    public void setPreviousTasksTable(JTable previousTasksTable) {
+        this.previousTasksTable = previousTasksTable;
     }
 }
 

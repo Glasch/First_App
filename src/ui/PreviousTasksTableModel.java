@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Copyright (c) Anton on 02.02.2018.
  */
-public class TableModel extends AbstractTableModel {
+public class PreviousTasksTableModel extends AbstractTableModel {
 
     private ArrayList<FBIAgentPreviousTask> previousTasks = new ArrayList <>() ;
 

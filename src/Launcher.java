@@ -1,6 +1,5 @@
-import ui.Front;
-
-import javax.swing.*;
+import ui.MainController;
+import ui.MainFront;
 
 /**
  * Copyright (c) Anton on 18.01.2018.
@@ -17,8 +16,8 @@ public class Launcher {
 
     private void run(){
 
-        Front front = new Front();
-        front.createMainMenu();
+        MainController mainController = new MainController();
+        mainController.showGUI();
 
     }
 

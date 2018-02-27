@@ -116,12 +116,18 @@ public class DBManager {
             fbiAgent.getPreviousTasks().add(fbiAgentPreviousTask);
 
         }
+    }
 
-
+    public ArrayList <FBIAgent> loadAllAgents() {
+        try {
+            return _loadAllAgents();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 
-    public ArrayList <FBIAgent> loadAllAgents() throws SQLException, ClassNotFoundException {
+    private ArrayList <FBIAgent> _loadAllAgents() throws SQLException, ClassNotFoundException {
 
         ArrayList <FBIAgent> allAgents = new ArrayList <>();
         Connection connection = getConnection();
@@ -147,7 +153,15 @@ public class DBManager {
         return allAgents;
     }
 
-    public FBIAgent loadAgent(int id) throws Exception {
+    public FBIAgent loadAgent(int id) {
+        try {
+            return _loadAgent(id);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private FBIAgent _loadAgent(int id) throws Exception {
 
         Connection connection = getConnection();
         String sql = "SELECT * FROM agent where id = ?";

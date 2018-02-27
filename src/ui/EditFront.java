@@ -24,11 +24,11 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 /**
  * Copyright (c) Anton on 17.01.2018.
  */
-public class Front {
+public class EditFront {
 
 
     private BufferedImage agentImage;
-    private Controller controller;
+    private EditController editController;
     private JTextField surnameTextField;
     private JTextField nameTextField;
     private JRadioButton sexMaleButton;
@@ -43,50 +43,49 @@ public class Front {
     private JTextField cityTextField;
     private UtilDateModel startDatePickerModel;
     private UtilDateModel endDatePickerModel;
-    private TableModel tableModel;
+    private PreviousTasksTableModel previousTasksTableModel;
     private JTextArea otherCommentsArea;
     private JTable previousTasksTable;
-    private JFrame mainMenuFrame;
-    private MainMenuTableModel mainMenuTableModel;
+    private JDialog dialog;
 
-    public Front() {
-        controller = new Controller(this);
+    public EditFront(EditController editController) {
+        this.editController = editController;
     }
 
-    public void createGUI(FrontType frontType) {
+    public void createGUI(FrontType frontType, Window parent) {
 
-        JFrame frame = new JFrame();
+        dialog = new JDialog(parent, Dialog.ModalityType.DOCUMENT_MODAL);
 
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setSize(900, 600);
-        frame.setLayout(new BorderLayout(5, 5));
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setSize(900, 600);
+        dialog.setLocationRelativeTo(parent);
+        dialog.setLayout(new BorderLayout(5, 5));
 
 
-        initTopPanel(frame);
-        initLeftPanel(frame);
-        initCenterPanel(frame);
-        initRightPanel(frame);
+        initTopPanel(dialog);
+        initLeftPanel(dialog);
+        initCenterPanel(dialog);
+        initRightPanel(dialog);
 
 
         JPanel panel = new JPanel();
         panel.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
-        frame.add(panel, BorderLayout.SOUTH);
+        dialog.add(panel, BorderLayout.SOUTH);
 
         if(frontType==FrontType.ADDNEW) {
             JButton addButton = new JButton("ADD");
             panel.add(addButton);
             addButton.addActionListener(e -> {
-                if (controller.validateInput()) {
+                if (editController.validateInput()) {
                     try {
-                        controller.onAddButtonClick();
+                        editController.onAddButtonClick();
                     } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(frame, e1.getMessage(), "Can not save agent", ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(dialog, e1.getMessage(), "Can not save agent", ERROR_MESSAGE);
                         return;
                     }
-                    JOptionPane.showMessageDialog(frame, "AGENT ADDED!");
+                    JOptionPane.showMessageDialog(dialog, "AGENT ADDED!");
                 } else {
-                    JOptionPane.showMessageDialog(frame, controller.getMessage(), "Validation failed", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog, editController.getMessage(), "Validation failed", JOptionPane.WARNING_MESSAGE);
                 }
             });
         }
@@ -99,17 +98,19 @@ public class Front {
 
         loadButton.addActionListener(e -> {
             if (!loadAgentTextField.getText().isEmpty()) {
-                controller.onLoadButtonClick();
+                editController.onLoadButtonClick();
             } else {
-                JOptionPane.showMessageDialog(frame, "Input Surname");
+                JOptionPane.showMessageDialog(dialog, "Input Surname");
             }
         });
-
-        frame.pack();
-        frame.setVisible(true);
     }
 
-    private void initRightPanel(JFrame frame) {
+    public void show() {
+        dialog.pack();
+        dialog.setVisible(true);
+    }
+
+    private void initRightPanel(Window frame) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -121,8 +122,8 @@ public class Front {
         panel.add(previousTasksLabel);
 
 
-         tableModel = new TableModel();
-         previousTasksTable = new JTable(tableModel);
+         previousTasksTableModel = new PreviousTasksTableModel();
+         previousTasksTable = new JTable(previousTasksTableModel);
         TableColumnModel m = previousTasksTable.getColumnModel();
         DateRenderer dateRenderer = new DateRenderer();
 
@@ -147,7 +148,7 @@ public class Front {
         deleteFromTable.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.onDeleteFromTableButtonClick();
+                editController.onDeleteFromTableButtonClick();
             }
         });
 
@@ -155,7 +156,7 @@ public class Front {
         clearTableButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.onClearTableButtonClick();
+                editController.onClearTableButtonClick();
             }
         });
 
@@ -174,7 +175,7 @@ public class Front {
         panel.add(otherCommentsArea);
     }
 
-    private void initCenterPanel(JFrame frame) {
+    private void initCenterPanel(Window frame) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
@@ -235,14 +236,14 @@ public class Front {
         panel.add(statusComboBox);
     }
 
-    private void initLeftPanel(JFrame frame) {
+    private void initLeftPanel(Window frame) {
         String path = "photo.jpg";
         loadImage(path);
         imageLabel = new JLabel(new ImageIcon(agentImage));
         imageLabel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.onImageLabelClick(imageLabel);
+                editController.onImageLabelClick(imageLabel);
 
             }
 
@@ -283,7 +284,7 @@ public class Front {
         }
     }
 
-    private void initTopPanel(JFrame frame) {
+    private void initTopPanel(Window frame) {
         JLabel headerLabel = new JLabel("FBI AGENTS");
         JPanel panel = new JPanel();
         panel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -299,8 +300,8 @@ public class Front {
     }
 
 
-    private void createAddPreviousTaskFrame(JFrame frame) {
-        JDialog addNewPreviousTaskFrame = new JDialog(frame, true);
+    private void createAddPreviousTaskFrame(Window frame) {
+        JDialog addNewPreviousTaskFrame = new JDialog(frame, Dialog.ModalityType.DOCUMENT_MODAL);
         addNewPreviousTaskFrame.setSize(new Dimension(600, 200));
         addNewPreviousTaskFrame.setLayout(new GridLayout(2, 3));
 
@@ -333,9 +334,9 @@ public class Front {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String res = controller.validatePreviousTask();
+                String res = editController.validatePreviousTask();
                 if(res == null) {
-                    controller.onAddPreviousTaskClick();
+                    editController.onAddPreviousTaskClick();
                 }else{
                     JOptionPane.showMessageDialog(frame,res);
                 }
@@ -351,11 +352,6 @@ public class Front {
             }
         });
 
-
-
-
-
-
         addNewPreviousTaskFrame.add(leftBox);
         addNewPreviousTaskFrame.add(centerBox);
         addNewPreviousTaskFrame.add(rightBox);
@@ -367,89 +363,6 @@ public class Front {
 
     }
 
-  public  void createMainMenu(){
-
-      mainMenuFrame = new JFrame();
-      mainMenuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-      mainMenuFrame.setVisible(true);
-      mainMenuFrame.setSize(900, 600);
-      mainMenuFrame.setLayout(new BorderLayout());
-
-
-      Box box = new Box(BoxLayout.X_AXIS);
-
-      JButton addNew = new JButton("Add New");
-      box.add(addNew);
-
-      JButton watchSelectedButton = new JButton("View");
-      box.add(watchSelectedButton);
-
-      JButton editSelected = new JButton("Edit");
-      box.add(editSelected);
-
-      JButton loadAllButton = new JButton("Load All");
-      box.add(loadAllButton);
-
-      JButton loadBy = new JButton("Search");
-      box.add(loadBy);
-
-      mainMenuTableModel = new MainMenuTableModel();
-      JTable allAgentsTable = new JTable(mainMenuTableModel);
-
-
-      allAgentsTable.addMouseListener(new MouseListener() {
-          @Override
-          public void mouseClicked(MouseEvent e) {
-              if (e.getClickCount()==2){
-                  controller.loadSelectedAgent(allAgentsTable);
-              }
-          }
-
-          @Override
-          public void mousePressed(MouseEvent e) {
-
-          }
-
-          @Override
-          public void mouseReleased(MouseEvent e) {
-
-          }
-
-          @Override
-          public void mouseEntered(MouseEvent e) {
-
-          }
-
-          @Override
-          public void mouseExited(MouseEvent e) {
-
-          }
-      });
-
-      JScrollPane previousTasksTableScrollPane = new JScrollPane(allAgentsTable);
-
-
-
-      addNew.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              controller.anAddNewButtonClick();
-          }
-      });
-
-      loadAllButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              controller.onLoadAllButtonClick();
-          }
-      });
-
-      mainMenuFrame.add(previousTasksTableScrollPane,BorderLayout.CENTER);
-      mainMenuFrame.add(box,BorderLayout.NORTH);
-
-      mainMenuFrame.pack();
-      mainMenuFrame.setLocationRelativeTo(null);
-    }
 
 
 
@@ -520,8 +433,8 @@ public class Front {
 
 
 
-    public TableModel getTableModel() {
-        return tableModel;
+    public PreviousTasksTableModel getPreviousTasksTableModel() {
+        return previousTasksTableModel;
     }
 
     public JTextArea getOtherCommentsArea() {
@@ -540,21 +453,6 @@ public class Front {
         this.previousTasksTable = previousTasksTable;
     }
 
-    public JFrame getMainMenuFrame() {
-        return mainMenuFrame;
-    }
-
-    public void setMainMenuFrame(JFrame mainMenuFrame) {
-        this.mainMenuFrame = mainMenuFrame;
-    }
-
-    public MainMenuTableModel getMainMenuTableModel() {
-        return mainMenuTableModel;
-    }
-
-    public void setMainMenuTableModel(MainMenuTableModel mainMenuTableModel) {
-        this.mainMenuTableModel = mainMenuTableModel;
-    }
 }
 
 

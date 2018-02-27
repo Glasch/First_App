@@ -1,14 +1,14 @@
 package ui;
 
-import model.FBIAgentPreviousTask;
 import model.FBIAgent;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
 /**
  * Copyright (c) Anton on 20.02.2018.
  */
-public class MainMenuTableModel extends TableModel {
+public class MainMenuTableModel extends AbstractTableModel {
 
     private ArrayList <FBIAgent> allAgents = new ArrayList <>();
 

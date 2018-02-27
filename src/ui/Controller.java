@@ -1,9 +1,6 @@
 package ui;
 
-import model.DBManager;
-import model.FBIAgent;
-import model.FBIAgentPreviousTask;
-import model.FBIAgentStatus;
+import model.*;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.imageio.ImageIO;
@@ -13,8 +10,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -201,5 +200,26 @@ class Controller {
         tableModel = front.getTableModel();
         tableModel.getPreviousTasks().clear();
         tableModel.fireTableDataChanged();
+    }
+
+    public void anAddNewButtonClick() {
+        front.createGUI(FrontType.ADDNEW);
+        front.getMainMenuFrame().dispose();
+    }
+
+    public void onLoadAllButtonClick() {
+        MainMenuTableModel mainMenuTableModel = front.getMainMenuTableModel() ;
+        DBManager dbManager = new DBManager();
+
+
+
+        try {
+            mainMenuTableModel.setAllAgents(dbManager.loadAllAgents());
+            mainMenuTableModel.fireTableDataChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

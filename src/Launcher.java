@@ -18,7 +18,7 @@ public class Launcher {
     private void run(){
 
         Front front = new Front();
-        front.createGUI();
+        front.createMainMenu();
 
     }
 

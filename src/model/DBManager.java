@@ -1,8 +1,7 @@
 package model;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.ArrayList;
 
 /**
  * Copyright (c) Anton on 18.01.2018.
@@ -26,7 +25,7 @@ public class DBManager {
         st.setBoolean(7, agent.isPatriotism());
         st.setString(8, agent.getStatus().toString());
         st.setBytes(9, agent.getImage());
-        st.setString(10,agent.getOtherComments());
+        st.setString(10, agent.getOtherComments());
 
         st.executeUpdate();
         ResultSet keys = st.getGeneratedKeys();
@@ -34,7 +33,7 @@ public class DBManager {
         int agentId = keys.getInt(1);
 
         for (FBIAgentPreviousTask previousTask : agent.getPreviousTasks()) {
-            saveAgentPreviousTask(connection,previousTask,agentId);
+            saveAgentPreviousTask(connection, previousTask, agentId);
         }
 
 
@@ -48,10 +47,10 @@ public class DBManager {
     public void saveAgentPreviousTask(Connection connection, FBIAgentPreviousTask previousTask, int agentID) throws Exception {
         String sql = "INSERT INTO previous_tasks(agent_id, start_date, end_date, city) VALUES ( ?, ?, ?, ?)";
         PreparedStatement st = connection.prepareStatement(sql);
-        st.setInt(1,agentID);
+        st.setInt(1, agentID);
         st.setDate(2, Date.valueOf(previousTask.getStartDate()));
         st.setDate(3, Date.valueOf(previousTask.getEndDate()));
-        st.setObject(4,previousTask.getCity());
+        st.setObject(4, previousTask.getCity());
 
         st.executeUpdate();
 
@@ -65,7 +64,7 @@ public class DBManager {
         Connection connection = getConnection();
         String sql = "SELECT * FROM agent where surname = ?";
         PreparedStatement st = connection.prepareStatement(sql);
-        st.setString(1,surname);
+        st.setString(1, surname);
         ResultSet rs = st.executeQuery();
 
 
@@ -81,7 +80,7 @@ public class DBManager {
             String status = rs.getString("status");
             fbiAgent.setStatus(FBIAgentStatus.valueOf(status));
             fbiAgent.setImage(rs.getBytes("image"));
-            loadPreviousTasks(connection,fbiAgent);
+            loadPreviousTasks(connection, fbiAgent);
             fbiAgent.setOtherComments(rs.getString("other_comments"));
             connection.close();
             return fbiAgent;
@@ -99,12 +98,12 @@ public class DBManager {
         return connection;
     }
 
-    public void loadPreviousTasks (Connection connection, FBIAgent fbiAgent) throws Exception{
+    public void loadPreviousTasks(Connection connection, FBIAgent fbiAgent) throws Exception {
 
         String sql = "SELECT id, start_date, end_date, city" +
                 " FROM previous_tasks WHERE agent_id = ? ";
         PreparedStatement st = connection.prepareStatement(sql);
-        st.setInt(1,fbiAgent.getId());
+        st.setInt(1, fbiAgent.getId());
         ResultSet rs = st.executeQuery();
 
         while (rs.next()) {
@@ -119,7 +118,32 @@ public class DBManager {
         }
 
 
-
     }
 
+
+    public ArrayList <MiniAgent> loadAllAgents() throws SQLException, ClassNotFoundException {
+
+        ArrayList <MiniAgent> allAgents = new ArrayList <>();
+        Connection connection = getConnection();
+
+        String sql = "SELECT id, surname, name, status" +
+                " FROM agent ";
+        PreparedStatement st = connection.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()) {
+            MiniAgent miniAgent = new MiniAgent();
+            miniAgent.setId(rs.getInt("id"));
+            miniAgent.setSurname(rs.getString("surname"));
+            miniAgent.setName(rs.getString("name"));
+            String status = rs.getString("status");
+            miniAgent.setStatus(FBIAgentStatus.valueOf(status));
+
+            allAgents.add(miniAgent);
+
+        }
+
+
+        return allAgents;
+    }
 }

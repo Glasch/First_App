@@ -1,6 +1,7 @@
 package ui;
 
 import model.FBIAgentStatus;
+import model.FrontType;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
@@ -45,15 +46,23 @@ public class Front {
     private TableModel tableModel;
     private JTextArea otherCommentsArea;
     private JTable previousTasksTable;
-
+    private JFrame mainMenuFrame;
+    private MainMenuTableModel mainMenuTableModel;
 
     public Front() {
         controller = new Controller(this);
     }
 
-    public void createGUI() {
+    public void createGUI(FrontType frontType) {
+
+
+
+
+
+
 
         JFrame frame = new JFrame();
+
 
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -71,8 +80,24 @@ public class Front {
         JPanel panel = new JPanel();
         panel.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
         frame.add(panel, BorderLayout.SOUTH);
-        JButton addButton = new JButton("ADD");
-        panel.add(addButton);
+
+        if(frontType==FrontType.ADDNEW) {
+            JButton addButton = new JButton("ADD");
+            panel.add(addButton);
+            addButton.addActionListener(e -> {
+                if (controller.validateInput()) {
+                    try {
+                        controller.onAddButtonClick();
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(frame, e1.getMessage(), "Can not save agent", ERROR_MESSAGE);
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(frame, "AGENT ADDED!");
+                } else {
+                    JOptionPane.showMessageDialog(frame, controller.getMessage(), "Validation failed", JOptionPane.WARNING_MESSAGE);
+                }
+            });
+        }
 
         JButton loadButton = new JButton("LOAD AGENT");
         panel.add(loadButton);
@@ -85,20 +110,6 @@ public class Front {
                 controller.onLoadButtonClick();
             } else {
                 JOptionPane.showMessageDialog(frame, "Input Surname");
-            }
-        });
-
-        addButton.addActionListener(e -> {
-            if (controller.validateInput()) {
-                try {
-                    controller.onAddButtonClick();
-                } catch (Exception e1) {
-                    JOptionPane.showMessageDialog(frame, e1.getMessage(), "Can not save agent", ERROR_MESSAGE);
-                    return;
-                }
-                JOptionPane.showMessageDialog(frame, "AGENT ADDED!");
-            } else {
-                JOptionPane.showMessageDialog(frame, controller.getMessage(), "Validation failed", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -167,7 +178,7 @@ public class Front {
 
         JLabel otherCommentsLabel = new JLabel("OTHER COMMENTS");
         panel.add(otherCommentsLabel);
-         otherCommentsArea = new JTextArea();
+        otherCommentsArea = new JTextArea();
         panel.add(otherCommentsArea);
     }
 
@@ -364,6 +375,65 @@ public class Front {
 
     }
 
+  public  void createMainMenu(){
+
+      mainMenuFrame = new JFrame();
+      mainMenuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      mainMenuFrame.setVisible(true);
+      mainMenuFrame.setSize(900, 600);
+      mainMenuFrame.setLayout(new BorderLayout());
+
+      Box box = new Box(BoxLayout.X_AXIS);
+
+      JButton addNew = new JButton("Add New");
+      box.add(addNew);
+
+      JButton watchSelectedButton = new JButton("Watch Selected");
+      box.add(watchSelectedButton);
+
+      JButton editSelected = new JButton("Edit Selected");
+      box.add(editSelected);
+
+      JButton loadAllButton = new JButton("Load All");
+      box.add(loadAllButton);
+
+      JButton loadBy = new JButton("Load by parameter");
+      box.add(loadBy);
+
+      mainMenuTableModel = new MainMenuTableModel();
+      JTable allAgentsTable = new JTable(mainMenuTableModel);
+      JScrollPane previousTasksTableScrollPane = new JScrollPane(allAgentsTable);
+
+
+
+      addNew.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              controller.anAddNewButtonClick();
+          }
+      });
+
+      loadAllButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              controller.onLoadAllButtonClick();
+          }
+      });
+
+
+
+      mainMenuFrame.add(previousTasksTableScrollPane,BorderLayout.CENTER);
+      mainMenuFrame.add(box,BorderLayout.NORTH);
+
+      mainMenuFrame.pack();
+
+      
+
+
+
+    }
+
+
 
     JTextField getSurnameTextField() {
         return surnameTextField;
@@ -450,6 +520,22 @@ public class Front {
 
     public void setPreviousTasksTable(JTable previousTasksTable) {
         this.previousTasksTable = previousTasksTable;
+    }
+
+    public JFrame getMainMenuFrame() {
+        return mainMenuFrame;
+    }
+
+    public void setMainMenuFrame(JFrame mainMenuFrame) {
+        this.mainMenuFrame = mainMenuFrame;
+    }
+
+    public MainMenuTableModel getMainMenuTableModel() {
+        return mainMenuTableModel;
+    }
+
+    public void setMainMenuTableModel(MainMenuTableModel mainMenuTableModel) {
+        this.mainMenuTableModel = mainMenuTableModel;
     }
 }
 

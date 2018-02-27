@@ -211,8 +211,6 @@ class Controller {
         MainMenuTableModel mainMenuTableModel = front.getMainMenuTableModel() ;
         DBManager dbManager = new DBManager();
 
-
-
         try {
             mainMenuTableModel.setAllAgents(dbManager.loadAllAgents());
             mainMenuTableModel.fireTableDataChanged();
@@ -222,4 +220,43 @@ class Controller {
 
 
     }
+
+    public void loadSelectedAgent(JTable allAgentsTable)  {
+
+       int id = (int) allAgentsTable.getModel().getValueAt(allAgentsTable.getSelectedRow(),0);
+       DBManager dbManager = new DBManager();
+        FBIAgent fbiAgent = null;
+        try {
+            fbiAgent = dbManager.loadAgent(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        front.createGUI(FrontType.WATCHSELECTED);
+        front.getSurnameTextField().setText(fbiAgent.getSurname());
+        front.getNameTextField().setText(fbiAgent.getName());
+        front.getSexMaleButton().setSelected(fbiAgent.getSex());
+        front.getSexFemaleButton().setSelected(!fbiAgent.getSex());
+        front.getPhysicalPowerCheckBox().setSelected(fbiAgent.isPhysicalPower());
+        front.getMentallyStrongCheckBox().setSelected(fbiAgent.isMentalStrength());
+        front.getPatriotismCheckBox().setSelected(fbiAgent.isPatriotism());
+        front.getStatusComboBox().setSelectedItem(fbiAgent.getStatus());
+        try {
+            front.getImageLabel().setIcon(new ImageIcon(byteToJPG(fbiAgent.getImage())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        front.getTableModel().getPreviousTasks().addAll(fbiAgent.getPreviousTasks());
+        front.getTableModel().fireTableDataChanged();
+        front.getOtherCommentsArea().setText(fbiAgent.getOtherComments());
+
+
+
+
+
+
+    }
+
 }

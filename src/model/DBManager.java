@@ -121,9 +121,9 @@ public class DBManager {
     }
 
 
-    public ArrayList <MiniAgent> loadAllAgents() throws SQLException, ClassNotFoundException {
+    public ArrayList <FBIAgent> loadAllAgents() throws SQLException, ClassNotFoundException {
 
-        ArrayList <MiniAgent> allAgents = new ArrayList <>();
+        ArrayList <FBIAgent> allAgents = new ArrayList <>();
         Connection connection = getConnection();
 
         String sql = "SELECT id, surname, name, status" +
@@ -132,18 +132,50 @@ public class DBManager {
         ResultSet rs = st.executeQuery();
 
         while (rs.next()) {
-            MiniAgent miniAgent = new MiniAgent();
-            miniAgent.setId(rs.getInt("id"));
-            miniAgent.setSurname(rs.getString("surname"));
-            miniAgent.setName(rs.getString("name"));
+            FBIAgent fbiAgent = new FBIAgent();
+            fbiAgent.setId(rs.getInt("id"));
+            fbiAgent.setSurname(rs.getString("surname"));
+            fbiAgent.setName(rs.getString("name"));
             String status = rs.getString("status");
-            miniAgent.setStatus(FBIAgentStatus.valueOf(status));
+            fbiAgent.setStatus(FBIAgentStatus.valueOf(status));
 
-            allAgents.add(miniAgent);
+            allAgents.add(fbiAgent);
 
         }
 
 
         return allAgents;
+    }
+
+    public FBIAgent loadAgent(int id) throws Exception {
+
+        Connection connection = getConnection();
+        String sql = "SELECT * FROM agent where id = ?";
+        PreparedStatement st = connection.prepareStatement(sql);
+        st.setInt(1, id);
+        ResultSet rs = st.executeQuery();
+
+
+        if (rs.next()) {
+            FBIAgent fbiAgent = new FBIAgent();
+            fbiAgent.setId(rs.getInt("id"));
+            fbiAgent.setSurname(rs.getString("surname"));
+            fbiAgent.setName(rs.getString("name"));
+            fbiAgent.setSex(rs.getBoolean("sex"));
+            fbiAgent.setPhysicalPower(rs.getBoolean("physicalpower"));
+            fbiAgent.setMentalStrength(rs.getBoolean("mentalstrength"));
+            fbiAgent.setPatriotism(rs.getBoolean("patriotism"));
+            String status = rs.getString("status");
+            fbiAgent.setStatus(FBIAgentStatus.valueOf(status));
+            fbiAgent.setImage(rs.getBytes("image"));
+            loadPreviousTasks(connection, fbiAgent);
+            fbiAgent.setOtherComments(rs.getString("other_comments"));
+            connection.close();
+            return fbiAgent;
+        }
+        connection.close();
+        return null;
+
+
     }
 }

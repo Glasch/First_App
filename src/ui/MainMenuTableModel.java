@@ -1,7 +1,7 @@
 package ui;
 
 import model.FBIAgentPreviousTask;
-import model.MiniAgent;
+import model.FBIAgent;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class MainMenuTableModel extends TableModel {
 
-    private ArrayList <MiniAgent> allAgents = new ArrayList <>();
+    private ArrayList <FBIAgent> allAgents = new ArrayList <>();
 
 
     @Override
@@ -40,28 +40,32 @@ public class MainMenuTableModel extends TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        MiniAgent miniAgent = allAgents.get(rowIndex);
+        FBIAgent fbiAgent = allAgents.get(rowIndex);
 
         switch (columnIndex) {
             case 0:
-                return miniAgent.getId();
+                return fbiAgent.getId();
             case 1:
-                return miniAgent.getSurname();
+                return fbiAgent.getSurname();
             case 2:
-                return miniAgent.getName();
+                return fbiAgent.getName();
             case 3:
-                return miniAgent.getStatus();
+                return fbiAgent.getStatus();
         }
 
         return "";
     }
 
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
 
-    public ArrayList <MiniAgent> getAllAgents() {
+    public ArrayList <FBIAgent> getAllAgents() {
         return allAgents;
     }
 
-    public void setAllAgents(ArrayList <MiniAgent> allAgents) {
+    public void setAllAgents(ArrayList <FBIAgent> allAgents) {
         this.allAgents = allAgents;
     }
 }

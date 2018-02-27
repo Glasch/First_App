@@ -55,15 +55,7 @@ public class Front {
 
     public void createGUI(FrontType frontType) {
 
-
-
-
-
-
-
         JFrame frame = new JFrame();
-
-
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -383,25 +375,57 @@ public class Front {
       mainMenuFrame.setSize(900, 600);
       mainMenuFrame.setLayout(new BorderLayout());
 
+
       Box box = new Box(BoxLayout.X_AXIS);
 
       JButton addNew = new JButton("Add New");
       box.add(addNew);
 
-      JButton watchSelectedButton = new JButton("Watch Selected");
+      JButton watchSelectedButton = new JButton("View");
       box.add(watchSelectedButton);
 
-      JButton editSelected = new JButton("Edit Selected");
+      JButton editSelected = new JButton("Edit");
       box.add(editSelected);
 
       JButton loadAllButton = new JButton("Load All");
       box.add(loadAllButton);
 
-      JButton loadBy = new JButton("Load by parameter");
+      JButton loadBy = new JButton("Search");
       box.add(loadBy);
 
       mainMenuTableModel = new MainMenuTableModel();
       JTable allAgentsTable = new JTable(mainMenuTableModel);
+
+
+      allAgentsTable.addMouseListener(new MouseListener() {
+          @Override
+          public void mouseClicked(MouseEvent e) {
+              if (e.getClickCount()==2){
+                  controller.loadSelectedAgent(allAgentsTable);
+              }
+          }
+
+          @Override
+          public void mousePressed(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseReleased(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseEntered(MouseEvent e) {
+
+          }
+
+          @Override
+          public void mouseExited(MouseEvent e) {
+
+          }
+      });
+
       JScrollPane previousTasksTableScrollPane = new JScrollPane(allAgentsTable);
 
 
@@ -420,17 +444,11 @@ public class Front {
           }
       });
 
-
-
       mainMenuFrame.add(previousTasksTableScrollPane,BorderLayout.CENTER);
       mainMenuFrame.add(box,BorderLayout.NORTH);
 
       mainMenuFrame.pack();
-
-      
-
-
-
+      mainMenuFrame.setLocationRelativeTo(null);
     }
 
 

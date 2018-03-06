@@ -14,8 +14,8 @@ public class MainController {
 
     public MainController() {
         mainFront = new MainFront(this);
-    }
 
+    }
 
 
     public void loadSelectedAgent(JTable allAgentsTable) {
@@ -42,5 +42,17 @@ public class MainController {
     public void showGUI() {
         mainFront.createMainMenu();
 
+    }
+
+
+    public void OnMainFrontSearchButtonClick() {
+
+        SearchController searchController = new SearchController();
+        searchController.getSearchFront().createSearchGUI(mainFront.getMainMenuFrame(), mainFront.getMainMenuTableModel());
+
+    }
+
+    public MainFront getMainFront() {
+        return mainFront;
     }
 }

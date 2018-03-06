@@ -90,6 +90,7 @@ public class DBManager {
     }
 
 
+
     private Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection connection = null;
         Class.forName("org.postgresql.Driver");
@@ -118,13 +119,9 @@ public class DBManager {
         }
     }
 
-    public ArrayList <FBIAgent> loadAllAgents() {
-        try {
-            return _loadAllAgents();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
+
+
+
 
 
     private ArrayList <FBIAgent> _loadAllAgents() throws SQLException, ClassNotFoundException {
@@ -151,6 +148,46 @@ public class DBManager {
 
 
         return allAgents;
+    }
+
+    private ArrayList <FBIAgent> _loadAllAgents(String sql) throws SQLException, ClassNotFoundException {
+
+        ArrayList <FBIAgent> allAgents = new ArrayList <>();
+        Connection connection = getConnection();
+
+        PreparedStatement st = connection.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()) {
+            FBIAgent fbiAgent = new FBIAgent();
+            fbiAgent.setId(rs.getInt("id"));
+            fbiAgent.setSurname(rs.getString("surname"));
+            fbiAgent.setName(rs.getString("name"));
+            String status = rs.getString("status");
+            fbiAgent.setStatus(FBIAgentStatus.valueOf(status));
+
+            allAgents.add(fbiAgent);
+
+        }
+
+
+        return allAgents;
+    }
+
+    public ArrayList <FBIAgent> loadAllAgents() {
+        try {
+            return _loadAllAgents();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public ArrayList <FBIAgent> loadAllAgents(String sql) {
+        try {
+            return _loadAllAgents(sql);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public FBIAgent loadAgent(int id) {

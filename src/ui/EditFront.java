@@ -72,7 +72,7 @@ public class EditFront {
         panel.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
         dialog.add(panel, BorderLayout.SOUTH);
 
-        if(frontType==FrontType.ADDNEW) {
+        if (frontType == FrontType.ADDNEW) {
             JButton addButton = new JButton("ADD");
             panel.add(addButton);
             addButton.addActionListener(e -> {
@@ -90,19 +90,6 @@ public class EditFront {
             });
         }
 
-        JButton loadButton = new JButton("LOAD AGENT");
-        panel.add(loadButton);
-
-        loadAgentTextField = new JTextField(20);
-        panel.add(loadAgentTextField);
-
-        loadButton.addActionListener(e -> {
-            if (!loadAgentTextField.getText().isEmpty()) {
-                editController.onLoadButtonClick();
-            } else {
-                JOptionPane.showMessageDialog(dialog, "Input Surname");
-            }
-        });
     }
 
     public void show() {
@@ -122,8 +109,8 @@ public class EditFront {
         panel.add(previousTasksLabel);
 
 
-         previousTasksTableModel = new PreviousTasksTableModel();
-         previousTasksTable = new JTable(previousTasksTableModel);
+        previousTasksTableModel = new PreviousTasksTableModel();
+        previousTasksTable = new JTable(previousTasksTableModel);
         TableColumnModel m = previousTasksTable.getColumnModel();
         DateRenderer dateRenderer = new DateRenderer();
 
@@ -348,7 +335,7 @@ public class EditFront {
         finishAddingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               addNewPreviousTaskFrame.dispose();
+                addNewPreviousTaskFrame.dispose();
             }
         });
 
@@ -361,9 +348,8 @@ public class EditFront {
 
         addNewPreviousTaskFrame.setVisible(true);
 
+
     }
-
-
 
 
     JTextField getSurnameTextField() {
@@ -422,7 +408,6 @@ public class EditFront {
     }
 
 
-
     public UtilDateModel getStartDatePickerModel() {
         return startDatePickerModel;
     }
@@ -430,7 +415,6 @@ public class EditFront {
     public UtilDateModel getEndDatePickerModel() {
         return endDatePickerModel;
     }
-
 
 
     public PreviousTasksTableModel getPreviousTasksTableModel() {

@@ -13,6 +13,7 @@ public class MainMenuTableModel extends AbstractTableModel {
     private ArrayList <FBIAgent> allAgents = new ArrayList <>();
 
 
+
     @Override
     public int getRowCount() {
         return allAgents.size();

@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Copyright (c) Anton on 06.03.2018.
@@ -19,30 +20,42 @@ public class SearchFront {
     private JTextField surnameTextField;
     private JComboBox statusComboBox;
 
-    public SearchFront(SearchController searchController) {
+    SearchFront(SearchController searchController) {
         this.searchController = searchController;
     }
 
 
-
-    void createSearchGUI(JFrame parent, MainMenuTableModel mainMenuTableModel) {
-
-
-
-        JDialog dialog = new JDialog(parent, Dialog.ModalityType.DOCUMENT_MODAL);
+    void createSearchGUI() {
+        JDialog dialog = new JDialog(searchController.getParentWindow(), Dialog.ModalityType.DOCUMENT_MODAL);
 
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         dialog.setSize(900, 600);
-        dialog.setLocationRelativeTo(parent);
+        dialog.setLocationRelativeTo(searchController.getParentWindow());
         dialog.setLayout(new GridLayout(1, 4));
-
-
 
         Box box = new Box(BoxLayout.Y_AXIS);
 
         JLabel idLabel = new JLabel("ID");
         idTextField = new JTextField();
 
+        idTextField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                boolean enable = idTextField.getText().isEmpty();
+                surnameTextField.setEnabled(enable);
+                nameTextField.setEnabled(enable);
+                statusComboBox.setEnabled(enable);
+            }
+        });
 
         box.add(idLabel);
         box.add(idTextField);
@@ -50,7 +63,6 @@ public class SearchFront {
         dialog.add(box);
 
         Box box1 = new Box(BoxLayout.Y_AXIS);
-
 
         JLabel surnameLabel = new JLabel("Surname");
         surnameTextField = new JTextField();
@@ -83,24 +95,27 @@ public class SearchFront {
         dialog.add(box3);
 
         JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchController.OnSearchFrontSearchButtonClick(idTextField,nameTextField,surnameTextField,statusComboBox,mainMenuTableModel,parent);
-            }
-        });
+        searchButton.addActionListener(e -> searchController.onSearchButtonClick());
         dialog.add(searchButton);
-
 
         dialog.pack();
         dialog.setVisible(true);
-
-
     }
 
+    public JTextField getIdTextField() {
+        return idTextField;
+    }
 
-    public SearchController getSearchController() {
-        return searchController;
+    public JTextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public JTextField getSurnameTextField() {
+        return surnameTextField;
+    }
+
+    public JComboBox getStatusComboBox() {
+        return statusComboBox;
     }
 }
 

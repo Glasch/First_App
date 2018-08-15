@@ -4,6 +4,7 @@ import model.DBManager;
 import model.FrontType;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Copyright (c) Anton on 27.02.2018.
@@ -14,7 +15,6 @@ public class MainController {
 
     public MainController() {
         mainFront = new MainFront(this);
-
     }
 
 
@@ -22,15 +22,18 @@ public class MainController {
         int id = (int) allAgentsTable.getModel().getValueAt(allAgentsTable.getSelectedRow(), 0);
         EditController editController = new EditController(mainFront.getMainMenuFrame());
         editController.loadSelectedAgent(id);
-
     }
 
     public void onLoadAllButtonClick() {
         MainMenuTableModel mainMenuTableModel = mainFront.getMainMenuTableModel();
         DBManager dbManager = new DBManager();
 
-        mainMenuTableModel.setAllAgents(dbManager.loadAllAgents());
-        mainMenuTableModel.fireTableDataChanged();
+        try {
+            mainMenuTableModel.setAllAgents(dbManager.loadAllAgents());
+            mainMenuTableModel.fireTableDataChanged();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainFront.getMainMenuFrame(), e.getMessage(), "Database Error!", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void onAddNewButtonClick() {
@@ -41,18 +44,19 @@ public class MainController {
 
     public void showGUI() {
         mainFront.createMainMenu();
-
     }
 
 
-    public void OnMainFrontSearchButtonClick() {
-
-        SearchController searchController = new SearchController();
-        searchController.getSearchFront().createSearchGUI(mainFront.getMainMenuFrame(), mainFront.getMainMenuTableModel());
-
+    public void onMainFrontSearchButtonClick() {
+        SearchController searchController = new SearchController(this);
+        searchController.createSearchGUI();
     }
 
-    public MainFront getMainFront() {
-        return mainFront;
+    public Window getWindow() {
+        return mainFront.getMainMenuFrame();
+    }
+
+    public MainMenuTableModel getMainMenuTableModel() {
+        return mainFront.getMainMenuTableModel();
     }
 }

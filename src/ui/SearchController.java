@@ -2,8 +2,10 @@ package ui;
 
 import model.DBManager;
 import model.FBIAgent;
+import model.FBIAgentStatus;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -12,83 +14,59 @@ import java.util.ArrayList;
 public class SearchController {
 
     private SearchFront searchFront;
+    private MainController mainController;
 
 
-    public SearchController() {
+    public SearchController(MainController mainController) {
+        this.mainController = mainController;
         searchFront = new SearchFront(this);
     }
 
 
-    public void OnSearchFrontSearchButtonClick(JTextField idTextField, JTextField nameTextField, JTextField surnameTextField, JComboBox status, MainMenuTableModel mainMenuTableModel,JFrame parent) {
+    public void onSearchButtonClick() {
+        String id = searchFront.getIdTextField().getText();
+        String name = searchFront.getNameTextField().getText();
+        String surname = searchFront.getSurnameTextField().getText();
+        FBIAgentStatus status = (FBIAgentStatus) searchFront.getStatusComboBox().getSelectedItem();
 
-        if(validateSearch(idTextField,nameTextField,surnameTextField,status)){
-            JOptionPane.showMessageDialog(parent, "Input Information to start searching!", "Search Validation failed", JOptionPane.WARNING_MESSAGE);
+        if (!validateSearch(id, name, surname, status)) {
+            JOptionPane.showMessageDialog(getParentWindow(), "Input Information to start searching!", "Search Validation failed", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String sql = create_SQL_String(idTextField, nameTextField, surnameTextField, status);
-
         DBManager dbManager = new DBManager();
-        ArrayList <FBIAgent> allFoundAgents;
-        allFoundAgents = dbManager.loadAllAgents(sql);
 
-        if(allFoundAgents.isEmpty()){
-            JOptionPane.showMessageDialog(parent,"No Agents Found!","Search Complete", JOptionPane.INFORMATION_MESSAGE );
+        String sql = dbManager.create_SQL_String(id, name, surname, status);
+
+        ArrayList <FBIAgent> allFoundAgents = null;
+        try {
+            allFoundAgents = dbManager.loadAllAgents(sql);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(getParentWindow(),e.getMessage(),"Database Error",JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        mainMenuTableModel.getAllAgents().clear();
-        mainMenuTableModel.setAllAgents(allFoundAgents);
-        mainMenuTableModel.fireTableDataChanged();
-    }
-
-
-    private String create_SQL_String(JTextField idTextField, JTextField nameTextField, JTextField surnameTextField, JComboBox status) {
-        int counter = 0;
-        String sql = "SELECT * FROM agent WHERE ";
-
-            if (!idTextField.getText().isEmpty()) {
-
-                sql = sql + " id = " + idTextField.getText();
-                return sql;
-
-            } else {
-
-
-                if (!surnameTextField.getText().isEmpty()) {
-
-                    sql = sql + "surname = " + "'" + surnameTextField.getText() + "'";
-                    counter++;
-                }
-
-                if (!nameTextField.getText().isEmpty()) {
-                    if (counter > 0){
-                        sql = sql + " AND ";
-                    }
-                    sql = sql + " name = " + "'" + nameTextField.getText()+ "'";
-                    counter++;
-                }
-
-                if (status.getSelectedItem() != null) {
-                    if (counter > 0) {
-                        sql = sql + " AND ";
-                    }
-                    sql = sql + "status = " + "'" + status.getSelectedItem() + "'";
-                }
-
-                return sql;
-
-            }
+        if (allFoundAgents.isEmpty()) {
+            JOptionPane.showMessageDialog(getParentWindow(), "No Agents Found!", "Search Complete", JOptionPane.INFORMATION_MESSAGE);
         }
 
 
+        MainMenuTableModel tableModel = mainController.getMainMenuTableModel();
+        tableModel.getAllAgents().clear();
+        tableModel.setAllAgents(allFoundAgents);
+        tableModel.fireTableDataChanged();
+    }
 
-
-    private boolean validateSearch(JTextField idTextField, JTextField nameTextField, JTextField surnameTextField, JComboBox status) {
-        return (idTextField.getText().isEmpty() && nameTextField.getText().isEmpty() && surnameTextField.getText().isEmpty() && status.getSelectedItem() == null);
+    private boolean validateSearch(String id, String name, String surname, FBIAgentStatus status) {
+        return !id.isEmpty() || !name.isEmpty() || !surname.isEmpty() || status != null;
 
     }
 
-    public SearchFront getSearchFront() {
-        return searchFront;
+    void createSearchGUI() {
+        searchFront.createSearchGUI();
+    }
+
+    public Window getParentWindow() {
+        return mainController.getWindow();
     }
 }

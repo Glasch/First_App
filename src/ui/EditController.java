@@ -1,18 +1,17 @@
 package ui;
 
-import model.*;
+import model.DBManager;
+import model.FBIAgent;
+import model.FBIAgentPreviousTask;
+import model.FrontType;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
 
 /**
  * Copyright (c) Anton on 18.01.2018.
@@ -21,7 +20,7 @@ class EditController {
 
     private EditFront editFront;
     private String message;
-    private PreviousTasksTableModel previousTasksTableModel;
+    //    private PreviousTasksTableModel previousTasksTableModel;
     private DBManager dbManager = new DBManager();
     private Window parentWindow;
 
@@ -33,7 +32,7 @@ class EditController {
     void onAddButtonClick() throws IOException {
         DBManager dbManager = new DBManager();
         try {
-            dbManager.saveAgent(DataHelper.getFromUI(editFront,previousTasksTableModel));
+            dbManager.saveAgent(DataHelper.getFromUI(editFront));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -41,8 +40,6 @@ class EditController {
     }
 
     public boolean validateInput() {
-
-
         if ("".equals(editFront.getSurnameTextField().getText())) {
             message = "Input Surname";
             return false;
@@ -63,11 +60,7 @@ class EditController {
     }
 
 
-
-
     void onImageLabelClick(JLabel imageLabel) {
-
-
         JFileChooser fileOpen = new JFileChooser();
         MyFileFilter fileFilter = new MyFileFilter();
 
@@ -87,25 +80,12 @@ class EditController {
         }
     }
 
-
-    public void onLoadButtonClick() {
-        DBManager dbManager = new DBManager();
-        try {
-            FBIAgent fbiAgent = dbManager.loadAgent(editFront.getLoadAgentTextField().getText());
-            DataHelper.setToUI(editFront, fbiAgent);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     public String getMessage() {
         return message;
     }
 
 
     public FBIAgentPreviousTask createPreviousTask() {
-
-
         FBIAgentPreviousTask previousTask = new FBIAgentPreviousTask();
 
         UtilDateModel start = editFront.getStartDatePickerModel();
@@ -124,18 +104,11 @@ class EditController {
 
 
     public void onAddPreviousTaskClick() {
-
-
         FBIAgentPreviousTask previousTask = createPreviousTask();
-        previousTasksTableModel = editFront.getPreviousTasksTableModel();
-        previousTasksTableModel.addData(previousTask);
-
-
+        editFront.getPreviousTasksTableModel().addData(previousTask);
     }
 
     public String validatePreviousTask() {
-
-
         UtilDateModel start = editFront.getStartDatePickerModel();
         UtilDateModel end = editFront.getEndDatePickerModel();
 
@@ -147,29 +120,26 @@ class EditController {
 
 
     public void onDeleteFromTableButtonClick() {
-
-
         JTable table = editFront.getPreviousTasksTable();
-        previousTasksTableModel = editFront.getPreviousTasksTableModel();
-        previousTasksTableModel.getPreviousTasks().remove(table.getSelectedRow());
-        previousTasksTableModel.fireTableDataChanged();
+        editFront.getPreviousTasksTableModel().getPreviousTasks().remove(table.getSelectedRow());
+        editFront.getPreviousTasksTableModel().fireTableDataChanged();
     }
 
     public void onClearTableButtonClick() {
-
-
-        previousTasksTableModel = editFront.getPreviousTasksTableModel();
-        previousTasksTableModel.getPreviousTasks().clear();
-        previousTasksTableModel.fireTableDataChanged();
+        editFront.getPreviousTasksTableModel().getPreviousTasks().clear();
+        editFront.getPreviousTasksTableModel().fireTableDataChanged();
     }
 
 
-
     public void loadSelectedAgent(int id) {
-        FBIAgent fbiAgent = dbManager.loadAgent(id);
-        createGUI(FrontType.WATCHSELECTED);
-        DataHelper.setToUI(editFront, fbiAgent);
-        show();
+        try {
+            FBIAgent fbiAgent = dbManager.loadAgent(id);
+            createGUI(FrontType.WATCHSELECTED);
+            DataHelper.setToUI(editFront, fbiAgent);
+            show();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(parentWindow, e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void createGUI(FrontType frontType) {

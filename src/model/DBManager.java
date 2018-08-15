@@ -27,7 +27,12 @@ public class DBManager {
         st.setBytes(9, agent.getImage());
         st.setString(10, agent.getOtherComments());
 
-        st.executeUpdate();
+        try {
+            st.executeUpdate();
+        } finally {
+            connection.close();
+        }
+
         ResultSet keys = st.getGeneratedKeys();
         keys.next();
         int agentId = keys.getInt(1);
@@ -36,12 +41,6 @@ public class DBManager {
             saveAgentPreviousTask(connection, previousTask, agentId);
         }
 
-
-        closeConnection(connection);
-    }
-
-    private void closeConnection(Connection connection) throws SQLException {
-        connection.close();
     }
 
     public void saveAgentPreviousTask(Connection connection, FBIAgentPreviousTask previousTask, int agentID) throws Exception {
@@ -51,10 +50,7 @@ public class DBManager {
         st.setDate(2, Date.valueOf(previousTask.getStartDate()));
         st.setDate(3, Date.valueOf(previousTask.getEndDate()));
         st.setObject(4, previousTask.getCity());
-
         st.executeUpdate();
-
-
     }
 
 
@@ -90,7 +86,6 @@ public class DBManager {
     }
 
 
-
     private Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection connection = null;
         Class.forName("org.postgresql.Driver");
@@ -115,16 +110,10 @@ public class DBManager {
             fbiAgentPreviousTask.setCity(rs.getString("city"));
             fbiAgentPreviousTask.setFbiAgent(fbiAgent);
             fbiAgent.getPreviousTasks().add(fbiAgentPreviousTask);
-
         }
     }
 
-
-
-
-
-
-    private ArrayList <FBIAgent> _loadAllAgents() throws SQLException, ClassNotFoundException {
+    public ArrayList <FBIAgent> loadAllAgents() throws Exception {
 
         ArrayList <FBIAgent> allAgents = new ArrayList <>();
         Connection connection = getConnection();
@@ -145,12 +134,10 @@ public class DBManager {
             allAgents.add(fbiAgent);
 
         }
-
-
         return allAgents;
     }
 
-    private ArrayList <FBIAgent> _loadAllAgents(String sql) throws SQLException, ClassNotFoundException {
+    public ArrayList <FBIAgent> loadAllAgents(String sql) throws Exception {
 
         ArrayList <FBIAgent> allAgents = new ArrayList <>();
         Connection connection = getConnection();
@@ -165,40 +152,12 @@ public class DBManager {
             fbiAgent.setName(rs.getString("name"));
             String status = rs.getString("status");
             fbiAgent.setStatus(FBIAgentStatus.valueOf(status));
-
             allAgents.add(fbiAgent);
-
         }
-
-
         return allAgents;
     }
 
-    public ArrayList <FBIAgent> loadAllAgents() {
-        try {
-            return _loadAllAgents();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public ArrayList <FBIAgent> loadAllAgents(String sql) {
-        try {
-            return _loadAllAgents(sql);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public FBIAgent loadAgent(int id) {
-        try {
-            return _loadAgent(id);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private FBIAgent _loadAgent(int id) throws Exception {
+    public FBIAgent loadAgent(int id) throws Exception {
 
         Connection connection = getConnection();
         String sql = "SELECT * FROM agent where id = ?";
@@ -228,5 +187,39 @@ public class DBManager {
         return null;
 
 
+    }
+
+    public String create_SQL_String(String id, String name, String surname, FBIAgentStatus status) {
+        boolean hasCondition = false;
+        String sql = "SELECT * FROM agent WHERE ";
+
+        if (!id.isEmpty()) {
+
+            sql = sql + " id = " + id;
+            return sql;
+
+        } else {
+
+
+            if (!surname.isEmpty()) {
+
+                sql = sql + "surname ILIKE " + "'%" + surname + "%'";
+                hasCondition = true;
+            }
+
+            if (!name.isEmpty()) {
+                if (hasCondition) sql += " AND ";
+                sql = sql + " name ILIKE " + "'%" + name + "%'";
+
+            }
+
+            if (status != null) {
+                if (hasCondition) sql += " AND ";
+                sql = sql + "status = " + "'" + status + "'";
+            }
+
+            return sql;
+
+        }
     }
 }

@@ -32,9 +32,9 @@ public class DataHelper {
     }
 
 
-    static  FBIAgent  getFromUI(EditFront editFront, PreviousTasksTableModel previousTasksTableModel){
+    static  FBIAgent  getFromUI(EditFront editFront){
         FBIAgent fbiAgent = new FBIAgent();
-        fbiAgent.setPreviousTasks(previousTasksTableModel.getPreviousTasks());
+        fbiAgent.setPreviousTasks(editFront.getPreviousTasksTableModel().getPreviousTasks());
         fbiAgent.setSurname(editFront.getSurnameTextField().getText());
         fbiAgent.setName(editFront.getNameTextField().getText());
         fbiAgent.setSex(editFront.getSexMaleButton().isSelected());

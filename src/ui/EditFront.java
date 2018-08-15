@@ -123,29 +123,11 @@ public class EditFront {
         JPanel p2 = new JPanel();
 
         JButton addToTable = new JButton("ADD NEW");
-        addToTable.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createAddPreviousTaskFrame(frame);
-            }
-
-
-        });
+        addToTable.addActionListener(e -> createAddPreviousTaskFrame(frame));
         JButton deleteFromTable = new JButton("DELETE");
-        deleteFromTable.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editController.onDeleteFromTableButtonClick();
-            }
-        });
-
+        deleteFromTable.addActionListener(e -> editController.onDeleteFromTableButtonClick());
         JButton clearTableButton = new JButton("CLEAR");
-        clearTableButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editController.onClearTableButtonClick();
-            }
-        });
+        clearTableButton.addActionListener(e -> editController.onClearTableButtonClick());
 
         p2.add(addToTable);
         p2.add(deleteFromTable);
@@ -231,27 +213,22 @@ public class EditFront {
             @Override
             public void mouseClicked(MouseEvent e) {
                 editController.onImageLabelClick(imageLabel);
-
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
             }
         });
         JPanel panel = new JPanel();
@@ -317,27 +294,20 @@ public class EditFront {
         rightBox.add(cityTextField);
 
         JButton addPreviousTaskButton = new JButton("ADD");
-        addPreviousTaskButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        addPreviousTaskButton.addActionListener(e -> {
 
-                String res = editController.validatePreviousTask();
-                if(res == null) {
-                    editController.onAddPreviousTaskClick();
-                }else{
-                    JOptionPane.showMessageDialog(frame,res);
+                    String res = editController.validatePreviousTask();
+                    if (res == null) {
+                        editController.onAddPreviousTaskClick();
+                    } else {
+                        JOptionPane.showMessageDialog(frame, res);
+                    }
                 }
-            }
-        });
+        );
 
 
         JButton finishAddingButton = new JButton("FINISH ADDING");
-        finishAddingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addNewPreviousTaskFrame.dispose();
-            }
-        });
+        finishAddingButton.addActionListener(e -> addNewPreviousTaskFrame.dispose());
 
         addNewPreviousTaskFrame.add(leftBox);
         addNewPreviousTaskFrame.add(centerBox);

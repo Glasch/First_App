@@ -18,7 +18,7 @@ public class Launcher {
 
         MainController mainController = new MainController();
         mainController.showGUI();
-        System.out.println("mainController = "+7);
+        System.out.println("mainController = "+8);
 
     }
 

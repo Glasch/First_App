@@ -18,6 +18,7 @@ public class Launcher {
 
         MainController mainController = new MainController();
         mainController.showGUI();
+        System.out.println("mainController = " + mainController);
 
     }
 
